@@ -46,3 +46,125 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   Copier le fichier `.env.example` et le renommer en `.env`
 -   Modifier les variables d'environnement dans le fichier `.env`
 -   Lancer la commande `php artisan migrate`
+
+### structure de la base de donné
+
+> users
+
+-   id
+-   full_name
+-   phone
+-   profile_picture
+-   email
+-   address?
+-   password
+-   created_at
+-   updated_at
+
+> departements
+
+-   id
+-   name
+-   description?
+-   image_path?
+-   created_at
+-   updated_at
+
+> sites (= parcours qu'un utilisateur reserve pour sa visite)
+
+-   id
+-   departement_id
+-   name
+-   description
+-   price
+-   created_at
+-   updated_at
+
+> medias (= images et videos des sites)
+
+-   id
+-   site_id
+-   image_path
+-   default (0 ou 1)
+-   created_at
+-   updated_at
+
+> dates (= dates de disponibilité des sites)
+
+-   id
+-   site_id
+-   date
+-   duration
+-   created_at
+-   updated_at
+
+> activites (= activités à faire sur un site)
+
+-   id
+-   site_id
+-   name
+-   description
+-   image_path?
+-   created_at
+-   updated_at
+
+> activites_sites (= liste des activités liées des sites avec des activités par defaut et des activités personnalisées)
+
+-   id
+-   site_id
+-   activite_id
+-   type (default, custom)
+-   price?
+-   created_at
+-   updated_at
+
+> reservations
+
+-   id
+-   user_id
+-   site_id
+-   date_id
+-   price
+-   nb_personnes
+-   details?
+-   created_at
+-   updated_at
+
+> reservations_activites
+
+-   id
+-   reservation_id
+-   activite_id
+-   created_at
+-   updated_at
+
+> events (= événements organisés par les sites)
+
+-   id
+-   title
+-   description
+-   image_path?
+-   limit_date_reservation
+-   limit_date_cancel
+-   created_at
+-   updated_at
+
+> places_events (= prix des événements organisés par les sites)
+
+-   id
+-   event_id
+-   price
+-   title
+-   created_at
+-   updated_at
+
+> reservations_events
+
+-   id
+-   user_id
+-   place_event_id
+-   nb_personnes
+-   price
+-   status (pending, paid, canceled)
+-   created_at
+-   updated_at
