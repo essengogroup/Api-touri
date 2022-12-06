@@ -89,7 +89,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   created_at
 -   updated_at
 
-> dates (= dates de disponibilité des sites)
+> sites_dates (= dates disponibles pour les sites)
 
 -   id
 -   site_id
