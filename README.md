@@ -47,7 +47,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   Modifier les variables d'environnement dans le fichier `.env`
 -   Lancer la commande `php artisan migrate`
 
-### structure de la base de donné
+### structure de la Base de données
 
 > users
 
@@ -118,7 +118,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   created_at
 -   updated_at
 
-> reservations
+> reservations-sites (= réservations des sites)
 
 -   id
 -   user_id
@@ -158,7 +158,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   created_at
 -   updated_at
 
-> reservations_events
+> reservations_events (= réservations des événements)
 
 -   id
 -   user_id
@@ -166,5 +166,23 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   nb_personnes
 -   price
 -   status (pending, paid, canceled)
+-   created_at
+-   updated_at
+
+> trophets (= trophés gagnés par les utilisateurs)
+
+-   id
+-   name
+-   description
+-   points
+-   image_path
+-   created_at
+-   updated_at
+
+> users_trophets (= trophés gagnés par les utilisateurs)
+
+-   id
+-   user_id
+-   trophets_id
 -   created_at
 -   updated_at
