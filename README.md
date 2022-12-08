@@ -54,7 +54,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   id
 -   full_name
 -   phone
--   profile_picture
+-   profile_picture?
 -   email
 -   address?
 -   password
@@ -94,14 +94,14 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   id
 -   site_id
 -   date
--   duration
+-   start_time
+-   end_time
 -   created_at
 -   updated_at
 
 > activites (= activités à faire sur un site)
 
 -   id
--   site_id
 -   name
 -   description
 -   image_path?
@@ -113,7 +113,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   id
 -   site_id
 -   activite_id
--   type (default, custom)
+-   type (obligatoire, optionnel)-> par defaut obligatoire
 -   price?
 -   created_at
 -   updated_at
@@ -126,7 +126,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   date_id
 -   price
 -   nb_personnes
--   details?
+-   commentaire?
 -   created_at
 -   updated_at
 
@@ -165,7 +165,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   place_event_id
 -   nb_personnes
 -   price
--   status (pending, paid, canceled)
+-   status (pending, accepted, refused)-> par defaut pending
 -   created_at
 -   updated_at
 
