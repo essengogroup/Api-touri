@@ -9,19 +9,7 @@ class Site extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'description',
-        'image_path',
-        'price',
-        'latitude',
-        'longitude',
-    ];
+    protected $guarded = [];
 
     /**
      * Get the departement that owns the site.
@@ -45,5 +33,17 @@ class Site extends Model
     public function reservations()
     {
         return $this->hasMany(ReservationSite::class);
+    }
+    /**
+     * Get the media for the site.
+     */
+    public function medias()
+    {
+        return $this->hasMany(Media::class);
+    }
+
+    public function siteDates()
+    {
+        return $this->hasMany(SiteDate::class);
     }
 }

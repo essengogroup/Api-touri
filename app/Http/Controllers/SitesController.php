@@ -17,11 +17,8 @@ class SitesController extends Controller
      */
     public function index()
     {
-        $sites = Site::pagniate(10);
-        return response()->json([
-            'message' => 'Sites found successfully',
-            'sites' => SiteResource::collection($sites)
-        ]);
+        $sites = Site::paginate()->reverse();
+        return SiteResource::collection($sites);
     }
 
     /**

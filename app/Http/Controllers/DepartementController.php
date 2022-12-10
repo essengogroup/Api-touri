@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateDepartementRequest;
 use App\Http\Resources\DepartementResource;
 use App\Models\Departement;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DepartementController extends Controller
 {
@@ -17,11 +18,8 @@ class DepartementController extends Controller
      */
     public function index()
     {
-        $departements = Departement::paginate(10);
-        return response()->json([
-            'message' => 'Departements found successfully',
-            'departements' => DepartementResource::collection($departements)
-        ]);
+        $departements = Departement::paginate()->reverse();
+        return DepartementResource::collection($departements);
     }
 
     /**
@@ -32,6 +30,7 @@ class DepartementController extends Controller
      */
     public function store(StoreDepartementRequest $request)
     {
+
         $departement = Departement::create($request->validated());
         return response()->json([
             'message' => 'Departement created successfully',

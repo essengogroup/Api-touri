@@ -9,16 +9,7 @@ class Departement extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'description',
-        'image_path',
-    ];
+    protected $guarded = [];
 
     public function sites()
     {

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('site_dates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained()->onDelete('cascade');
-            $table->date('date');
+            $table->date('date_');
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();

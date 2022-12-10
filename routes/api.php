@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\DepartementController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\SiteDateController;
 use App\Http\Controllers\SitesController;
 use App\Http\Controllers\UserController;
+use App\Models\Media;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,7 +38,10 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     require __DIR__ . '/auth.php';
     Route::get('user', [UserController::class, 'index']);
     Route::apiResource('departement', DepartementController::class);
+    Route::apiResource('media', MediaController::class)->only(["store", "show", "destroy", "index"]);
     Route::apiResource('site', SitesController::class);
+    Route::apiResource('date-site', SiteDateController::class);
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('user', UserController::class)->only(['update', 'show']);
     });

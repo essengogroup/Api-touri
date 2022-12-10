@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSiteRequest extends FormRequest
+class StoreMediaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,11 @@ class StoreSiteRequest extends FormRequest
     public function rules()
     {
         return [
-            "departement_id" => "required",
-            "name" => "required|string|max:255",
-            "description" => "nullable|string",
-            "price" => "required",
-            "latitude" => "nullable",
-            "longitude" => "nullable"
+            'name' => 'nullable|string',
+            'site_id' => 'required|exists:sites,id',
+            'path' => 'required|file',
+            'type' => 'nullable|in:image,video',
+            'is_main' => 'nullable|boolean'
         ];
     }
 }

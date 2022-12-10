@@ -13,7 +13,7 @@ class UpdateSiteRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,12 @@ class UpdateSiteRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "departement_id" => "nullable",
+            "name" => "nullable|string|max:255",
+            "description" => "nullable|string",
+            "price" => "nullable|alpha_num",
+            "latitude" => "nullable",
+            "longitude" => "nullable"
         ];
     }
 }

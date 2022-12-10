@@ -9,16 +9,13 @@ class Media extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Get the site that owns the media.
      */
-    protected $fillable = [
-        'name',
-        'description',
-        'image_path',
-        'type',
-        'is_main',
-    ];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
 }
