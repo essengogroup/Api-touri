@@ -19,4 +19,9 @@ class Departement extends Model
         'description',
         'image_path',
     ];
+
+    public function sites()
+    {
+        return $this->hasMany(Site::class);
+    }
 }

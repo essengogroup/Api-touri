@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Gorge de Diosso",
+        "departement": "Bouenza",
+        "description": "A une demi-heure de Pointe-Noire, des paysages fantastiques vous attendent !"
+    },
+    {
+        "name": "Mvassa",
+        "departement": "Likouala",
+        "description": "Accessibles depuis Pointe-Noire, trois spots principaux permettent de surfer. Mvassa est le plus tranquille, surtout les samedis matin et la pointe rocheuse crée de belles vagues dans une baie abritée."
+    },
+    {
+        "name": "Lac loufoualeba",
+        "departement": "Plateaux",
+        "description": "Pour quelques heures, il est possible de s'echapper de pointe-noire pour rejoindre le lac loufoualeba, aussi appele lac aux papyrus.Les papyrus semblent avoir ete plante part les colons pour fabriquer du papier de qualite. Depuis, ils ont colonise tout le bord du lac.Ce lac est le terminus de la sortie de la descente de la loeme, mais c'est surtout un endroit accessible en voiture, vivement recommande pour une sortie ornithologie."
+    },
+    {
+        "name": "Lac Cayo",
+        "departement": "Plateaux",
+        "description": "Le lac Cayo est un deux deux grands lacs du Sud de Pointe-Noire. Le lac Loufoualeba est au Nord-Ouest, le lac Cayo au Sud Est, en aval, sur le cours de la Loémé. C'est un endroit rarement visité, et vous le ressentirez si vous partez à la rencontre des villageois."
+    },
+    {
+        "name": "Sortie de tortue ",
+        "departement": "Bouenza",
+        "description": "Rénatura est une ONG qui protège (entre autres) les tortues marines. Sur les côtes Congolaises, plusieurs espèces peuvent être observées : Les tortues vertes et olivâtres sont les plus courantes, et plus rarement des tortues Luth. En plus d'actions d'éducation et de sensibilisation, cette association est présente sur le terrain pour suivre les pontes et libérer les tortues prises dans les filets des pêcheurs. Il est possible de participer à ces deux actions pour 1 0 000 CFA par adulte."
+    },
+    {
+        "name": "Malonda lunch",
+        "departement": "Bouenza",
+        "description": "Le Malonda est le seul lodge de toute la région, et de presque de tout le pays. Il vous accueille pour y passer la journée, ou un weekend !"
+    },
+    {
+        "name": "Le lagune de Yombo",
+        "departement": "Bouenza",
+        "description": "A une heure de Pointe-Noire, une lagune bien cachée. Plusieurs personnes affirment avoir vu des hippopotames, ou leurs traces !"
+    }
+]

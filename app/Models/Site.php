@@ -24,6 +24,14 @@ class Site extends Model
     ];
 
     /**
+     * Get the departement that owns the site.
+     */
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class);
+    }
+
+    /**
      * Get the activites for the site.
      */
     public function activites()
