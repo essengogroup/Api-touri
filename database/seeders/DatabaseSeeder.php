@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Activite;
 use App\Models\Departement;
 use App\Models\Site;
 use App\Models\User;
@@ -19,14 +20,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $departementDatas = json_decode(file_get_contents(storage_path('mocks') . '/departements.json'), true);
+        $siteDatas = json_decode(file_get_contents(storage_path('mocks') . '/sites.json'), true);
+
+
         User::factory()->create([
             'full_name' => 'super admin',
             'email' => 'super@admin.com',
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         ]);
         User::factory(10)->create();
-        $departementDatas = json_decode(file_get_contents(storage_path('mocks') . '/departements.json'), true);
-        $siteDatas = json_decode(file_get_contents(storage_path('mocks') . '/sites.json'), true);
+
 
         collect($departementDatas)->each(function ($departementData) use ($siteDatas) {
             $departement = Departement::create([
@@ -71,5 +75,6 @@ class DatabaseSeeder extends Seeder
                 })->toArray()
             );
         });
+        Activite::factory(10)->create();
     }
 }

@@ -2,14 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddSiteToActiveRequest;
 use App\Http\Requests\StoreSiteRequest;
 use App\Http\Requests\UpdateSiteRequest;
 use App\Http\Resources\SiteResource;
 use App\Models\Site;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class SitesController extends Controller
 {
+    public function addActivite(AddSiteToActiveRequest $request, $id)
+    {
+        $site = Site::findOrFail($id);
+        if ($site->activites->contains($request->activite_id)) {
+            return response()->json([
+                'message' => 'Activite already exists'
+            ], 409);
+        }
+        $site->activites()->attach($request->activite_id, [
+            'type' => $request->has('type') ? $request->type : 'obligatoire',
+            'price' => $request->has('type') && $request->type === 'optionnel' ? $request->price : null
+        ]);
+        return response()->json([
+            'message' => 'Activite added successfully',
+            'site' => new SiteResource($site)
+        ]);
+    }
     /**
      * Display a listing of the resource.
      *

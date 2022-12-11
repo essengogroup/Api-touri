@@ -14,6 +14,14 @@ class MediaResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'path' => url($this->path),
+            'type' => $this->type,
+            'is_main' => $this->is_main,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
     }
 }

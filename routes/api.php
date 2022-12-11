@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\SiteDateController;
@@ -40,7 +41,10 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     Route::apiResource('departement', DepartementController::class);
     Route::apiResource('media', MediaController::class)->only(["store", "show", "destroy", "index"]);
     Route::apiResource('site', SitesController::class);
+    Route::post('site/{site}/activite', [SitesController::class, 'addActivite']);
     Route::apiResource('date-site', SiteDateController::class);
+    Route::apiResource('activite', ActiviteController::class);
+    Route::post('activite/{activite}/site', [ActiviteController::class, 'addSite']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('user', UserController::class)->only(['update', 'show']);
