@@ -42,6 +42,8 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     Route::apiResource('media', MediaController::class)->only(["store", "show", "destroy", "index"]);
     Route::apiResource('site', SitesController::class);
     Route::post('site/{site}/activite', [SitesController::class, 'addActivite']);
+    Route::patch('site/{site}/activite/{activite}', [SitesController::class, 'updateActivite']);
+    Route::delete('site/{site}/activite/{activite}', [SitesController::class, 'removeActivite']);
     Route::apiResource('date-site', SiteDateController::class);
     Route::apiResource('activite', ActiviteController::class);
     Route::post('activite/{activite}/site', [ActiviteController::class, 'addSite']);

@@ -13,6 +13,45 @@ use Illuminate\Support\Facades\Http;
 
 class SitesController extends Controller
 {
+    public function removeActivite($id, $activite_id)
+    {
+        $site = Site::findOrFail($id);
+        if (!$site->activites->contains($activite_id)) {
+            return response()->json([
+                'message' => 'Activite does not exists'
+            ], 409);
+        }
+        $site->activites()->detach($activite_id);
+        return response()->json([
+            'message' => 'Activite removed successfully',
+            'site' => new SiteResource($site)
+        ]);
+    }
+
+    public function updateActivite(AddSiteToActiveRequest $request, $id, $activite_id)
+    {
+        $site = Site::findOrFail($id);
+        if (!$site->activites->contains($activite_id)) {
+            return response()->json([
+                'message' => 'Activite does not exists'
+            ], 409);
+        }
+        $site->activites()->updateExistingPivot($activite_id, [
+            'type' => $request->has('type') ? $request->type : 'obligatoire',
+            'price' => $request->has('type') && $request->type === 'optionnel' ? $request->price : null
+        ]);
+        return response()->json([
+            'message' => 'Activite updated successfully',
+            'site' => new SiteResource($site)
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function addActivite(AddSiteToActiveRequest $request, $id)
     {
         $site = Site::findOrFail($id);
