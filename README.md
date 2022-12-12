@@ -126,6 +126,7 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   date_id
 -   price
 -   nb_personnes
+-   status (pending, accepted, refused, canceled)-> par defaut pending
 -   commentaire?
 -   created_at
 -   updated_at

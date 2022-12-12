@@ -19,7 +19,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('site_date_id')->constrained()->onDelete('cascade');
             $table->float('price');
-            $table->integer('nb_personnes');
+            $table->integer('nb_personnes')->default(1);
+            $table->boolean('is_paid')->default(false);
+            $table->enum('status', ['pending', 'accepted', 'refused', 'canceled'])->default('pending');
             $table->text('commentaire')->nullable();
             $table->timestamps();
         });

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('activite_id')->constrained()->onDelete('cascade');
             $table->enum('type', ['obligatoire', 'optionnel'])->default('obligatoire');
             $table->float('price')->nullable();
-            $table->timestamps();
         });
     }
 

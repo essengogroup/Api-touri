@@ -40,6 +40,6 @@ class ReservationSite extends Model
      */
     public function activites()
     {
-        return $this->belongsToMany(Activite::class, 'reservations_activites');
+        return $this->belongsToMany(Activite::class, 'reservations_activites', 'reservation_site_id', 'activite_id');
     }
 }

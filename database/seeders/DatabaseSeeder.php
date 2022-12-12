@@ -46,16 +46,16 @@ class DatabaseSeeder extends Seeder
                         'name' => $siteData['name'],
                         'description' => $siteData['description'],
                         'price' =>
-                        Factory::create()->numberBetween(10, 100),
+                        Factory::create()->numberBetween(1000, 100000),
                         'latitude' => Factory::create()->latitude,
                         'longitude' => Factory::create()->longitude,
                     ];
                 })->toArray()
             );
         });
-
+        $activites = Activite::factory(10)->create();
         $sites = Site::all();
-        $sites->map(function ($site) {
+        $sites->map(function ($site) use ($activites) {
             $site->medias()->createMany(
                 collect(range(1, 5))->map(function () {
                     return [
@@ -74,7 +74,15 @@ class DatabaseSeeder extends Seeder
                     ];
                 })->toArray()
             );
+            $site->activites()->attach(
+                $activites->random(5)->map(function ($activite) {
+                    return [
+                        'activite_id' => $activite->id,
+                        'type' => Factory::create()->randomElement(['optionnel', 'obligatoire']),
+                        'price' => Factory::create()->numberBetween(1000, 100000),
+                    ];
+                })->toArray()
+            );
         });
-        Activite::factory(10)->create();
     }
 }

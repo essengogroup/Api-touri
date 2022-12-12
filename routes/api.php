@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\ReservationSiteController;
 use App\Http\Controllers\SiteDateController;
 use App\Http\Controllers\SitesController;
 use App\Http\Controllers\UserController;
@@ -50,5 +51,11 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('user', UserController::class)->only(['update', 'show']);
+
+        Route::apiResource('reservation-site', ReservationSiteController::class)->only(['index', 'show', 'store']);
+        Route::path('reservation-site/cancel/{reservationSite}', [ReservationSiteController::class, 'cancel']);
+        Route::path('reservation-site/pay/{reservationSite}', [ReservationSiteController::class, 'pay']);
+        Route::path('reservation-site/validate/{reservationSite}', [ReservationSiteController::class, 'validated']);
+        Route::path('reservation-site/refuse/{reservationSite}', [ReservationSiteController::class, 'refuse']);
     });
 });
