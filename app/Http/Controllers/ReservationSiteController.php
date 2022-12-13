@@ -80,6 +80,29 @@ class ReservationSiteController extends Controller
         ]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+
     public function getReservationSiteByUser($id)
     {
         $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('user_id', $id)->paginate();
@@ -110,9 +133,21 @@ class ReservationSiteController extends Controller
     public function validated($id)
     {
         $reservationSite = ReservationSite::findOrFail($id);
-        $reservationSite->update(['status' => 'validated']);
+        // $reservationSite->status = 'accepted';
+        // dd($reservationSite);
+        // $reservationSite->save();
+        $reservationSite->update(['status' => 'accepted']);
         return response()->json([
             'message' => 'ReservationSite validated successfully',
+        ]);
+    }
+
+    public function refused($id)
+    {
+        $reservationSite = ReservationSite::findOrFail($id);
+        $reservationSite->update(['status' => 'refused']);
+        return response()->json([
+            'message' => 'ReservationSite refused successfully',
         ]);
     }
 }

@@ -52,10 +52,10 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('user', UserController::class)->only(['update', 'show']);
 
-        Route::apiResource('reservation-site', ReservationSiteController::class)->only(['index', 'show', 'store']);
-        Route::path('reservation-site/cancel/{reservationSite}', [ReservationSiteController::class, 'cancel']);
-        Route::path('reservation-site/pay/{reservationSite}', [ReservationSiteController::class, 'pay']);
-        Route::path('reservation-site/validate/{reservationSite}', [ReservationSiteController::class, 'validated']);
-        Route::path('reservation-site/refuse/{reservationSite}', [ReservationSiteController::class, 'refuse']);
+        Route::apiResource('reservation-site', ReservationSiteController::class);
+        Route::put('reservation-site/{reservationSite}/validate', [ReservationSiteController::class, 'validated']);
+        Route::put('reservation-site/{reservationSite}/cancel', [ReservationSiteController::class, 'cancel']);
+        Route::put('reservation-site/{reservationSite}/pay', [ReservationSiteController::class, 'pay']);
+        Route::put('reservation-site/{reservationSite}/refuse', [ReservationSiteController::class, 'refused']);
     });
 });
