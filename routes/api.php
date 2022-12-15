@@ -50,7 +50,7 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     Route::post('activite/{activite}/site', [ActiviteController::class, 'addSite']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::apiResource('user', UserController::class)->only(['update', 'show']);
+        Route::apiResource('user', UserController::class)->except(['index', 'store']);
 
         Route::apiResource('reservation-site', ReservationSiteController::class);
         Route::put('reservation-site/{reservationSite}/validate', [ReservationSiteController::class, 'validated']);
