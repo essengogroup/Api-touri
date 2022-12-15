@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         return response()->json([
             'message' => 'User found successfully',
-            'user' => User::find($id)
+            'data' => User::find($id)
         ]);
     }
 
