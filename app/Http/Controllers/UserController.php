@@ -56,7 +56,7 @@ class UserController extends Controller
         $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed'],
         ]);
 
         $user = User::find($id);
