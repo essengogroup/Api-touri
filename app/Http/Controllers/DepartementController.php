@@ -15,6 +15,29 @@ class DepartementController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *
+     *@OA\Get(
+     *  path="/departements",
+     *  operationId="getDepartementsList",
+     *  tags={"Departements"},
+     *  summary="Get list of departements",
+     *  description="Returns list of departements",
+     *  @OA\Response(
+     *      response=200,
+     *      description="Successful operation",
+     *      @OA\JsonContent(
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/Departement")
+     *      ),
+     *  ),
+     *  @OA\Response(
+     *      response="default",
+     *      description="unexpected error",
+     *      @OA\JsonContent(
+     *      @OA\Property(property="message", type="string", example="Unexpected error")
+     *  )
+     * )
+     * )
      */
     public function index()
     {
@@ -27,6 +50,30 @@ class DepartementController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
+     * @OA\Post(
+     * path="/departements",
+     * summary="Store new departement",
+     * description="Returns departement data",
+     * operationId="storeDepartement",
+     * tags={"Departements"},
+     * @OA\RequestBody(
+     *   required=true,
+     *  @OA\JsonContent(ref="#/components/schemas/Departement")
+     * ),
+     * @OA\Response(
+     *   response=200,
+     *  description="Successful operation",
+     * @OA\JsonContent(ref="#/components/schemas/Departement")
+     * ),
+     * @OA\Response(
+     *  response="default",
+     * description="unexpected error",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unexpected error")
+     * )
+     * )
+     * )
      */
     public function store(StoreDepartementRequest $request)
     {
@@ -43,6 +90,35 @@ class DepartementController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     *
+     * @OA\Get(
+     * path="/departements/{id}",
+     * summary="Get departement information",
+     * description="Returns departement data",
+     * operationId="showDepartement",
+     * tags={"Departements"},
+     * @OA\Parameter(
+     *  name="id",
+     * description="Departement id",
+     * required=true,
+     * in="path",
+     * @OA\Schema(
+     * type="integer"
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * @OA\JsonContent(ref="#/components/schemas/Departement")
+     * ),
+     * @OA\Response(
+     * response="default",
+     * description="unexpected error",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unexpected error")
+     * )
+     * )
+     * )
      */
     public function show($id)
     {
@@ -59,6 +135,39 @@ class DepartementController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     *
+     * @OA\Put(
+     * path="/departements/{id}",
+     * summary="Update existing departement",
+     * description="Returns updated departement data",
+     * operationId="updateDepartement",
+     * tags={"Departements"},
+     * @OA\Parameter(
+     * name="id",
+     * description="Departement id",
+     * required=true,
+     * in="path",
+     * @OA\Schema(
+     * type="integer"
+     * )
+     * ),
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(ref="#/components/schemas/Departement")
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * @OA\JsonContent(ref="#/components/schemas/Departement")
+     * ),
+     * @OA\Response(
+     * response="default",
+     * description="unexpected error",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unexpected error")
+     * )
+     * )
+     * )
      */
     public function update(UpdateDepartementRequest $request, $id)
     {
@@ -75,6 +184,38 @@ class DepartementController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     *
+     * @OA\Delete(
+     * path="/departements/{id}",
+     * summary="Delete existing departement",
+     * description="Returns message",
+     * operationId="deleteDepartement",
+     * tags={"Departements"},
+     * @OA\Parameter(
+     * name="id",
+     * description="Departement id",
+     * required=true,
+     * in="path",
+     * @OA\Schema(
+     * type="integer"
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Departement deleted successfully"),
+     * @OA\Property(property="departement", ref="#/components/schemas/Departement")
+     * )
+     * ),
+     * @OA\Response(
+     * response="default",
+     * description="unexpected error",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unexpected error")
+     * )
+     * )
+     * )
      */
     public function destroy($id)
     {
