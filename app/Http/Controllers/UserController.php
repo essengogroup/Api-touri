@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Doctrine\Inflector\Rules\French\Rules;
 use Illuminate\Http\Request;
@@ -16,7 +17,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return response()->json([
+            'message' => 'Users found successfully',
+            'data' => UserResource::collection(User::orderBy('id', 'desc'))
+        ]);
     }
 
     /**
@@ -40,7 +44,7 @@ class UserController extends Controller
     {
         return response()->json([
             'message' => 'User found successfully',
-            'data' => User::find($id)
+            'data' => new UserResource(User::find($id))
         ]);
     }
 
@@ -64,7 +68,10 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
-        return $user;
+        return response()->json([
+            'message' => 'User updated successfully',
+            'data' => new UserResource($user)
+        ]);
     }
 
     /**
