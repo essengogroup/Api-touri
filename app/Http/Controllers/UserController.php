@@ -58,9 +58,9 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed'],
+            'full_name' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['nullable', 'confirmed'],
         ]);
 
         $user = User::find($id);
@@ -82,6 +82,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        $user->delete();
+        return response()->json([
+            'message' => 'User deleted successfully',
+            'data' => new UserResource($user)
+        ]);
     }
 }
