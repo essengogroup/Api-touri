@@ -26,6 +26,7 @@ class UpdateDepartementRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image_path' => 'nullable' //|image|max:2048
         ];
     }
 }

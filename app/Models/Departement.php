@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  * title="Departement",
  * @OA\Property(property="id", type="integer", readOnly="true", example="1"),
  * @OA\Property(property="name", type="string", readOnly="true", example="Departement 1"),
+ * @OA\Property(property="description", type="string", readOnly="true", example="Departement 1 description"),
+ * @OA\Property(property="image_path", type="string", readOnly="true", example="https://www.google.com"),
  * @OA\Property(property="created_at", type="string", readOnly="true", example="2021-05-05T12:00:00.000000Z"),
  * @OA\Property(property="updated_at", type="string", readOnly="true", example="2021-05-05T12:00:00.000000Z"),
  * @OA\Property(property="deleted_at", type="string", readOnly="true", example="2021-05-05T12:00:00.000000Z"),
