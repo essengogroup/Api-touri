@@ -76,7 +76,7 @@ class SitesController extends Controller
      */
     public function index()
     {
-        $sites = Site::paginate()->reverse();
+        $sites = Site::orderBy('created_at', 'desc')->paginate();
         return SiteResource::collection($sites);
     }
 
