@@ -81,7 +81,7 @@ class DepartementController extends Controller
         $departement = Departement::create($request->validated());
         return response()->json([
             'message' => 'Departement created successfully',
-            'departement' => $departement
+            'data' => $departement
         ]);
     }
 
@@ -125,7 +125,7 @@ class DepartementController extends Controller
         $departement = Departement::findOrFail($id);
         return response()->json([
             'message' => 'Departement found successfully',
-            'departement' => new DepartementResource($departement)
+            'data' => new DepartementResource($departement)
         ]);
     }
 
@@ -175,7 +175,7 @@ class DepartementController extends Controller
         $departement->update($request->validated());
         return response()->json([
             'message' => 'Departement updated successfully',
-            'departement' => new DepartementResource($departement)
+            'data' => new DepartementResource($departement)
         ]);
     }
 
@@ -223,7 +223,7 @@ class DepartementController extends Controller
         $departement->delete();
         return response()->json([
             'message' => 'Departement deleted successfully',
-            'departement' => new DepartementResource($departement)
+            'data' => new DepartementResource($departement)
         ]);
     }
 }
