@@ -26,7 +26,7 @@ class StoreMediaRequest extends FormRequest
         return [
             'name' => 'nullable|string',
             'site_id' => 'required|exists:sites,id',
-            'path' => 'required|file',
+            'path' => 'required|string',
             'type' => 'nullable|in:image,video',
             'is_main' => 'nullable|boolean'
         ];

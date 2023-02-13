@@ -26,7 +26,7 @@ class UpdateActiviteRequest extends FormRequest
         return [
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'image_path' => 'nullable|file|mimetypes:image/jpeg,image/png',
+            'image_path' => 'nullable', //|file|mimetypes:image/jpeg,image/png
         ];
     }
 }

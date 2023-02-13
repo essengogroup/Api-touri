@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->longText('description');
-            $table->string('image_path')->nullable();
+            $table->longText('image_path')->nullable();
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');

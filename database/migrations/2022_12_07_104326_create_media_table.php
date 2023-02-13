@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('site_id')->constrained()->onDelete('cascade');
             $table->string('name')->nullable();
-            $table->text('path');
+            $table->longText('path');
             $table->enum('type', ['image', 'video'])->default('image');
             $table->boolean('is_main')->default(false);
             $table->timestamps();
