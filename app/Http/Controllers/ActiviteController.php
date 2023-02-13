@@ -51,7 +51,7 @@ class ActiviteController extends Controller
     public function store(StoreActiviteRequest $request)
     {
         $data = $request->validated();
-        $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
+        // $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
         $activite = Activite::create($data);
         return response()->json([
             'message' => 'Activite created successfully',

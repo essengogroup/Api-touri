@@ -84,7 +84,7 @@ class MediaController extends Controller
     public function store(StoreMediaRequest $request)
     {
         $data = $request->validated();
-        $data['path'] = saveFileToStorageDirectory($request, 'path', 'medias');
+        // $data['path'] = saveFileToStorageDirectory($request, 'path', 'medias');
         $media = Media::create($data);
         return response()->json([
             'message' => 'Media created successfully',
