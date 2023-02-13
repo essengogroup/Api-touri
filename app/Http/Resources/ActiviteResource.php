@@ -18,7 +18,7 @@ class ActiviteResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'image_path' =>$this->path,// url($this->image_path),
+            'image_path' => $this->image_path, // url($this->image_path),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'sites' => $this->sites->map(function ($site) {
