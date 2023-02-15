@@ -25,6 +25,7 @@ class SiteResource extends JsonResource
             'updated_at' => $this->updated_at,
             'departement' => $this->departement,
             'medias' => MediaResource::collection($this->medias),
+            'siteDates' => SiteDateResource::collection($this->siteDates),
             'activites' => $this->activites->map(function ($activite) {
                 return [
                     'id' => $activite->id,

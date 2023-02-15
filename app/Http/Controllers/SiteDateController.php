@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSiteDateRequest;
 use App\Http\Requests\UpdateSiteDateRequest;
-use App\Http\Resources\SiteResource;
+use App\Http\Resources\SiteDateResource;
 use App\Models\SiteDate;
 use Illuminate\Http\Request;
 
@@ -43,7 +43,7 @@ class SiteDateController extends Controller
         $siteDates = SiteDate::orderBy('created_at', 'desc')->paginate();
         return response()->json([
             'message' => 'Site dates found successfully',
-            'data' => SiteResource::collection($siteDates)
+            'data' => SiteDateResource::collection($siteDates)
         ]);
     }
 
@@ -82,7 +82,7 @@ class SiteDateController extends Controller
         $siteDate = SiteDate::create($request->validated());
         return response()->json([
             'message' => 'Site date created successfully',
-            'data' => new SiteResource($siteDate)
+            'data' => new SiteDateResource($siteDate)
         ], 201);
     }
 
@@ -127,7 +127,7 @@ class SiteDateController extends Controller
         $siteDate = SiteDate::findOrFail($id);
         return response()->json([
             'message' => 'Site date found successfully',
-            'data' => new SiteResource($siteDate)
+            'data' => new SiteDateResource($siteDate)
         ]);
     }
 
@@ -179,7 +179,7 @@ class SiteDateController extends Controller
         $siteDate->update($request->validated());
         return response()->json([
             'message' => 'Site date updated successfully',
-            'data' => new SiteResource($siteDate)
+            'data' => new SiteDateResource($siteDate)
         ]);
     }
 
