@@ -40,7 +40,7 @@ class SiteDateController extends Controller
      */
     public function index()
     {
-        $siteDates = SiteDate::paginate();
+        $siteDates = SiteDate::orderBy('created_at', 'desc')->paginate();
         return response()->json([
             'message' => 'Site dates found successfully',
             'data' => SiteResource::collection($siteDates)

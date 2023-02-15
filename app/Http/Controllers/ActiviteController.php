@@ -35,7 +35,7 @@ class ActiviteController extends Controller
      */
     public function index()
     {
-        $activite = Activite::paginate();
+        $activite = Activite::orderBy('created_at', 'desc')->paginate();
         return response()->json([
             'message' => 'Activite found successfully',
             'data' => ActiviteResource::collection($activite)

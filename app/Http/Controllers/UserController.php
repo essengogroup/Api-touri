@@ -19,7 +19,7 @@ class UserController extends Controller
     {
         return response()->json([
             'message' => 'Users found successfully',
-            'data' => UserResource::collection(User::orderBy('id', 'desc')->get())
+            'data' => UserResource::collection(User::orderBy('created_at', 'desc')->paginate())
         ]);
     }
 
