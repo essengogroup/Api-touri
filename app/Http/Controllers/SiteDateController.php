@@ -82,8 +82,8 @@ class SiteDateController extends Controller
         $siteDate = SiteDate::create($request->validated());
         return response()->json([
             'message' => 'Site date created successfully',
-            'data' => $siteDate
-        ]);
+            'data' => new SiteResource($siteDate)
+        ], 201);
     }
 
     /**
