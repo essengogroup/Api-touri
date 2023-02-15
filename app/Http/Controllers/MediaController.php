@@ -88,8 +88,8 @@ class MediaController extends Controller
         $media = Media::create($data);
         return response()->json([
             'message' => 'Media created successfully',
-            'media' => new MediaResource($media)
-        ]);
+            'data' => new MediaResource($media)
+        ], 201);
     }
 
     /**
@@ -136,7 +136,7 @@ class MediaController extends Controller
         $media = Media::findOrFail($id);
         return response()->json([
             'message' => 'Media found successfully',
-            'media' => new MediaResource($media)
+            'data' => new MediaResource($media)
         ]);
     }
 

@@ -179,7 +179,7 @@ class SiteDateController extends Controller
         $siteDate->update($request->validated());
         return response()->json([
             'message' => 'Site date updated successfully',
-            'siteDate' => $siteDate
+            'data' => new SiteResource($siteDate)
         ]);
     }
 
