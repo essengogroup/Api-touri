@@ -25,7 +25,7 @@ class UpdateUserequest extends FormRequest
     {
         return [
             'full_name' => 'nullable|string|max:255',
-            'email' => 'nullable|string|email|exists:users,email',
+            'email' => 'nullable|string|email|unique:users,email',
             'phone' => 'nullable',
             'address' => 'nullable|string',
             'profile_picture' => 'nullable|file',
