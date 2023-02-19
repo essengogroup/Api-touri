@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Doctrine\Inflector\Rules\French\Rules;
@@ -52,22 +53,16 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserequest $request, User $user)
     {
-        $request->validate([
-            'full_name' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['nullable', 'confirmed'],
-        ]);
-
-        $user = User::find($id);
-        $user->full_name = $request->full_name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $data = $request->validated();
+        if (collect($data)->has('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+        $user->update($data);
         return response()->json([
             'message' => 'User updated successfully',
             'data' => new UserResource($user)
