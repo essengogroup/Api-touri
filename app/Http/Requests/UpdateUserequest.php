@@ -28,7 +28,7 @@ class UpdateUserequest extends FormRequest
             'email' => 'nullable|string|email|unique:users,email',
             'phone' => 'nullable',
             'address' => 'nullable|string',
-            'profile_picture' => 'nullable|file',
+            'profile_picture' => 'nullable',
             'password' => 'nullable|string|max:255|min:8'
         ];
     }
