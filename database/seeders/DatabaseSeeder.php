@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
                 'description' => Factory::create()->text(200),
                 'image_path' => Factory::create()->imageUrl(640, 480, 'paris', true),
             ]);
-            $site = $departement->sites()->createMany(
+            $departement->sites()->createMany(
                 collect($siteDatas)->filter(function ($siteData) use ($departementData) {
                     return $siteData['departement'] === $departementData['name'];
                 })->map(function ($siteData) {
@@ -53,7 +53,9 @@ class DatabaseSeeder extends Seeder
                 })->toArray()
             );
         });
+
         $activites = Activite::factory(10)->create();
+
         $sites = Site::all();
         $sites->map(function ($site) use ($activites) {
             $site->medias()->createMany(
@@ -64,7 +66,6 @@ class DatabaseSeeder extends Seeder
                     ];
                 })->toArray()
             );
-
             $site->siteDates()->createMany(
                 collect(range(1, 5))->map(function () {
                     return [
@@ -84,5 +85,7 @@ class DatabaseSeeder extends Seeder
                 })->toArray()
             );
         });
+
+        $reservations = \App\Models\ReservationSite::factory(10)->create();
     }
 }

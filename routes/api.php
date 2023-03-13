@@ -42,6 +42,10 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
         Route::apiResource('user', UserController::class)->except(['index', 'store']);
 
         Route::apiResource('reservation-site', ReservationSiteController::class);
+        Route::get('reservation-site/user/{user}', [ReservationSiteController::class, 'getReservationSiteByUser']);
+
+
+        Route::post('reservation-site/{reservationSite}/activite', [ReservationSiteController::class, 'addActivite']);
         Route::put('reservation-site/{reservationSite}/validate', [ReservationSiteController::class, 'validated']);
         Route::put('reservation-site/{reservationSite}/cancel', [ReservationSiteController::class, 'cancel']);
         Route::put('reservation-site/{reservationSite}/pay', [ReservationSiteController::class, 'pay']);
