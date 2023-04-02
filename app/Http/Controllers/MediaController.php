@@ -43,7 +43,7 @@ class MediaController extends Controller
      */
     public function index()
     {
-        return MediaResource::collection(Media::orderBy('created_at', 'desc')->paginate());
+        return MediaResource::collection(Media::orderBy('created_at', 'desc')->get());
     }
     /**
      * Store a newly created resource in storage.

@@ -41,7 +41,7 @@ class DepartementController extends Controller
      */
     public function index()
     {
-        $departements = Departement::orderBy('created_at', 'desc')->paginate();
+        $departements = Departement::orderBy('created_at', 'desc')->get();
         return DepartementResource::collection($departements);
     }
 

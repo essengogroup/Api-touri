@@ -86,7 +86,7 @@ class ReservationSiteController extends Controller
 
 
         // PAGINATE
-        $reservationSites = $query->with('site', 'user', 'siteDate', 'activites')->paginate();
+        $reservationSites = $query->with('site', 'user', 'siteDate', 'activites')->get();
         return response()->json([
             'message' => 'ReservationSites found successfully',
             'data' => ReservationSiteResource::collection($reservationSites)
@@ -179,7 +179,7 @@ class ReservationSiteController extends Controller
 
     public function getReservationSiteByUser($id)
     {
-        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('user_id', $id)->paginate();
+        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('user_id', $id)->get();
         return response()->json([
             'message' => 'ReservationSites found successfully',
             'data' => ReservationSiteResource::collection($reservationSites)
@@ -224,7 +224,7 @@ class ReservationSiteController extends Controller
 
     public function getReservationSiteBySite($id)
     {
-        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('site_id', $id)->paginate();
+        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('site_id', $id)->get();
         return response()->json([
             'message' => 'ReservationSites found successfully',
             'data' => ReservationSiteResource::collection($reservationSites)
@@ -233,7 +233,7 @@ class ReservationSiteController extends Controller
 
     public function getReservationSiteBySiteDate($id)
     {
-        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('site_date_id', $id)->paginate();
+        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('site_date_id', $id)->get();
         return response()->json([
             'message' => 'ReservationSites found successfully',
             'data' => ReservationSiteResource::collection($reservationSites)
