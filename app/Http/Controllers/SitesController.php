@@ -88,6 +88,7 @@ class SitesController extends Controller
      */
     public function store(StoreSiteRequest $request)
     {
+        $this->middleware('admin');
         $site = Site::create($request->validated());
         return response()->json([
             'message' => 'Site created successfully',
@@ -119,6 +120,7 @@ class SitesController extends Controller
      */
     public function update(UpdateSiteRequest $request, $id)
     {
+        $this->middleware('admin');
         $site = Site::findOrFail($id);
         $site->update($request->validated());
         return response()->json([
@@ -135,6 +137,7 @@ class SitesController extends Controller
      */
     public function destroy($id)
     {
+        $this->middleware('admin');
         $site = Site::findOrFail($id);
         $site->delete();
         return response()->json([

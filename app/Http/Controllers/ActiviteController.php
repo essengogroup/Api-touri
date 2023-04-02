@@ -100,6 +100,8 @@ class ActiviteController extends Controller
      */
     public function destroy($id)
     {
+        $this->middleware('admin');
+
         $activite = Activite::findOrFail($id);
         $activite->delete();
         return response()->json([

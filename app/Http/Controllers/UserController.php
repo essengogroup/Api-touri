@@ -77,6 +77,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $this->middleware('admin');
         $user = User::find($id);
         $user->delete();
         return response()->json([

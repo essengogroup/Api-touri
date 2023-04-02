@@ -219,6 +219,7 @@ class DepartementController extends Controller
      */
     public function destroy($id)
     {
+        $this->middleware('admin');
         $departement = Departement::findOrFail($id);
         $departement->delete();
         return response()->json([

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +24,7 @@ class AuthenticatedSessionController extends Controller
 
         return response()->json([
             'message' => 'User logged in successfully',
-            'user' => $request->user(),
+            'user' =>  new UserResource($request->user()),
             'token' => $request->user()->createToken('auth_token')->plainTextToken,
             'token_type' => 'Bearer Token',
         ]);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -34,13 +35,15 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $user->assignRole('user');
+
         event(new Registered($user));
 
         Auth::login($user);
 
         return response()->json([
             'message' => 'User created successfully',
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $user->createToken('auth_token')->plainTextToken,
             'token_type' => 'Bearer Token',
         ]);

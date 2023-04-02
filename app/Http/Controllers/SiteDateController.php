@@ -221,6 +221,7 @@ class SiteDateController extends Controller
      */
     public function destroy(int $id)
     {
+        $this->middleware('admin');
         $siteDate = SiteDate::findOrFail($id);
         $siteDate->delete();
         return response()->json(['message' => 'Site date deleted successfully']);
