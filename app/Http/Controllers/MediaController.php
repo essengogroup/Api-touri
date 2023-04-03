@@ -182,9 +182,10 @@ class MediaController extends Controller
      * )
      *
      */
-    public function destroy(Media $media)
+    public function destroy(int $id)
     {
         $this->middleware('admin');
+        $media = Media::findOrFail($id);
         $media->delete();
         return response()->json([
             'message' => 'Media deleted successfully',
