@@ -28,7 +28,8 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     });
     require __DIR__ . '/auth.php';
     Route::get('user', [UserController::class, 'index']);
-    Route::apiResource('departement', DepartementController::class);
+    Route::apiResource('departement', DepartementController::class)->except(['update']);
+    Route::post('departement/{departement}', [DepartementController::class, 'update']);
     Route::apiResource('media', MediaController::class)->only(["store", "show", "destroy", "index"]);
     Route::apiResource('site', SitesController::class);
     Route::post('site/{site}/activite', [SitesController::class, 'addActivite']);

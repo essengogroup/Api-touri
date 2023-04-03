@@ -84,7 +84,7 @@ class DepartementController extends Controller
         $departement = Departement::create($data);
         return response()->json([
             'message' => 'Departement created successfully',
-            'data' => $departement
+            'data' => new DepartementResource($departement)
         ]);
     }
 
