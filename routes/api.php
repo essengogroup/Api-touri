@@ -35,7 +35,8 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     Route::patch('site/{site}/activite/{activite}', [SitesController::class, 'updateActivite']);
     Route::delete('site/{site}/activite/{activite}', [SitesController::class, 'removeActivite']);
     Route::apiResource('date-site', SiteDateController::class);
-    Route::apiResource('activite', ActiviteController::class);
+    Route::apiResource('activite', ActiviteController::class)->except(['update']);
+    Route::post('activite/{activite}', [ActiviteController::class, 'update']);
     Route::post('activite/{activite}/site', [ActiviteController::class, 'addSite']);
 
     Route::middleware(['auth:sanctum'])->group(function () {

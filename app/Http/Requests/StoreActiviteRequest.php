@@ -26,7 +26,7 @@ class StoreActiviteRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'image_path' => 'nullable|string',
+            'image_path' => 'nullable',
         ];
     }
 }
