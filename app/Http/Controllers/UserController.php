@@ -62,6 +62,10 @@ class UserController extends Controller
         if (collect($data)->has('password')) {
             $data['password'] = Hash::make($request->password);
         }
+        if ($request->hasFile('profile_picture')) {
+            // $data['profile_picture'] = $request->file('profile_picture')->store('profile_pictures');
+            $data['profile_picture'] = saveFileToStorageDirectory($request, 'profile_picture', 'profile_picture');
+        }
         $user->update($data);
         return response()->json([
             'message' => 'User updated successfully',

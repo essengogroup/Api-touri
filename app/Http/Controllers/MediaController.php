@@ -85,6 +85,9 @@ class MediaController extends Controller
     {
         $data = $request->validated();
         // $data['path'] = saveFileToStorageDirectory($request, 'path', 'medias');
+        if ($request->hasFile('path')) {
+            $data['path'] = saveFileToStorageDirectory($request, 'path', 'medias');
+        }
         $media = Media::create($data);
         return response()->json([
             'message' => 'Media created successfully',

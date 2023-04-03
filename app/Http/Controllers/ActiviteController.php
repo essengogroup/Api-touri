@@ -51,6 +51,9 @@ class ActiviteController extends Controller
     public function store(StoreActiviteRequest $request)
     {
         $data = $request->validated();
+        if ($request->hasFile('image_path')) {
+            $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
+        }
         // $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
         $activite = Activite::create($data);
         return response()->json([
@@ -84,8 +87,12 @@ class ActiviteController extends Controller
     public function update(UpdateActiviteRequest $request, $id)
     {
         $activite = Activite::findOrFail($id);
+        $data = $request->validated();
+        if ($request->hasFile('image_path')) {
+            $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
+        }
         // $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
-        $activite->update($request->validated());
+        $activite->update($data);
         return response()->json([
             'message' => 'Activite updated successfully',
             'data' => new ActiviteResource($activite)

@@ -77,8 +77,11 @@ class DepartementController extends Controller
      */
     public function store(StoreDepartementRequest $request)
     {
-
-        $departement = Departement::create($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('image_path')) {
+            $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'departements');
+        }
+        $departement = Departement::create($data);
         return response()->json([
             'message' => 'Departement created successfully',
             'data' => $departement
@@ -172,7 +175,11 @@ class DepartementController extends Controller
     public function update(UpdateDepartementRequest $request, $id)
     {
         $departement = Departement::findOrFail($id);
-        $departement->update($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('image_path')) {
+            $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'departements');
+        }
+        $departement->update($data);
         return response()->json([
             'message' => 'Departement updated successfully',
             'data' => new DepartementResource($departement)
