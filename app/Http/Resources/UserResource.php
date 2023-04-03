@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'full_name' => $this->full_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'profile_picture' => url($this->profile_picture),
+            'profile_picture' => $this->profile_picture ? url($this->profile_picture) : null,
             'address' => $this->address,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
