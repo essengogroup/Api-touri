@@ -14,6 +14,22 @@ class ReservationSiteResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            "site_id" => $this->site_id,
+            "user_id" => $this->user_id,
+            "site_date_id" => $this->site_date_id,
+            "price" => $this->price,
+            "nb_personnes" => $this->nb_personnes,
+            "is_paid" => $this->is_paid,
+            "status" => $this->status,
+            "commentaire" => $this->commentaire,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "site" => new SiteResource($this->site),
+            "user" => new UserResource($this->user),
+            "site_date" => new SiteDateResource($this->site_date),
+            "activites" => ActiviteResource::collection($this->activites),
+        ];
     }
 }
