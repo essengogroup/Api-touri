@@ -26,10 +26,11 @@ class ReservationSiteResource extends JsonResource
             "commentaire" => $this->commentaire,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
+            "site_date" => new SiteDateResource($this->siteDate),
             "site" => new SiteResource($this->site),
             "user" => new UserResource($this->user),
-            "site_date" => new SiteDateResource($this->site_date),
             "activites" => ActiviteResource::collection($this->activites),
         ];
+        // return parent::toArray($request);
     }
 }
