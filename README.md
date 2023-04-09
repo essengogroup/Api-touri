@@ -189,3 +189,6 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   trophets_id
 -   created_at
 -   updated_at
+
+### index
+
