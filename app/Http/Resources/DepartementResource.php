@@ -19,6 +19,7 @@ class DepartementResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'image_path' => url($this->image_path),
+            'sites'=> SiteResource::collection($this->sites),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
