@@ -1,31 +1,6 @@
 ## About Api-touri
 
-api-touri est une api qui permet de gérer les réservations des touristes dans les hotels et les restaurants.
-
-## Installation et lancement avec docker
-
-### Prérequis
-
--   Docker
--   Docker-compose
-
-### Installation
-
--   Cloner le projet
--   Se placer dans le dossier du projet
--   Lancer la commande `docker-compose up -d`
-
-### Lancement
-
--   Se placer dans le dossier du projet
--   Lancer la commande `docker-compose up -d`
-
-### Arrêt
-
--   Se placer dans le dossier du projet
--   Lancer la commande `docker-compose down`
-
-## Installation et lancement sans docker
+Api pour gérer les réservations des touristes des utilisateurs de l'application touri-touri.
 
 ### Prérequis
 
@@ -41,35 +16,33 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 -   Se placer dans le dossier du projet
 -   Lancer la commande `composer install`
 -   Lancer la commande `npm install`
--   Lancer la commande `npm run dev`
--   Créer une base de données
+-   Lancer la commande `npm run build`
 -   Copier le fichier `.env.example` et le renommer en `.env`
 -   Modifier les variables d'environnement dans le fichier `.env`
--   Lancer la commande `php artisan migrate`
+-   Lancer la commande `php artisan migrate` pour créer les tables dans la base de données
 
 ### structure de la Base de données
 
-> users
+### users
+    -   id
+    -   full_name
+    -   phone
+    -   profile_picture?
+    -   email
+    -   address?
+    -   isActive?
+    -   password
+    -   created_at
+    -   updated_at
 
--   id
--   full_name
--   phone
--   profile_picture?
--   email
--   address?
--   isActive?
--   password
--   created_at
--   updated_at
+### departements
 
-> departements
-
--   id
--   name
--   description?
--   image_path?
--   created_at
--   updated_at
+    -   id
+    -   name
+    -   description?
+    -   image_path?
+    -   created_at
+    -   updated_at
 
 > sites (= parcours qu'un utilisateur reserve pour sa visite)
 
@@ -192,3 +165,8 @@ api-touri est une api qui permet de gérer les réservations des touristes dans 
 
 ### index
 
+Ce qui manque
+- raiting
+- partage sur les réseaux sociaux
+- popularité du site 
+- commentaires
