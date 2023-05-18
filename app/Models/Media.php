@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @OA\Schema(
@@ -23,12 +24,31 @@ class Media extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setAttribute('type', ['image', 'video']);
+    }
+
+    protected $fillable = [
+        'name',
+        'path',
+        'type',
+        'is_main',
+        'site_id',
+    ];
+
+    protected $casts = [
+        'is_main' => 'boolean',
+        'site_id' => 'integer',
+        'type' => 'string',
+    ];
 
     /**
      * Get the site that owns the media.
      */
-    public function site()
+    public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class);
     }

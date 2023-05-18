@@ -6,14 +6,16 @@ use App\Http\Requests\StoreSiteDateRequest;
 use App\Http\Requests\UpdateSiteDateRequest;
 use App\Http\Resources\SiteDateResource;
 use App\Models\SiteDate;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class SiteDateController extends Controller
+class SiteDateController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      *
      * @OA\Get(
      * path="/site-dates",
@@ -38,20 +40,23 @@ class SiteDateController extends Controller
      * )
      * )
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $siteDates = SiteDate::orderBy('created_at', 'desc')->get();
-        return response()->json([
-            'message' => 'Site dates found successfully',
-            'data' => SiteDateResource::collection($siteDates)
-        ]);
+        $siteDates = SiteDate::query()
+            ->when($request->has('site_id'), fn($query) => $query->where('site_id', $request->get('site_id')))
+            ->when($request->has('date'), fn($query) => $query->where('date', $request->get('date')))
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return $this->sendResponse(
+            data: SiteDateResource::collection($siteDates),
+            message: 'list of site dates');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreSiteDateRequest $request
+     * @return JsonResponse
      *
      * @OA\Post(
      * path="/site-dates",
@@ -77,20 +82,20 @@ class SiteDateController extends Controller
      * )
      * )
      */
-    public function store(StoreSiteDateRequest $request)
+    public function store(StoreSiteDateRequest $request): JsonResponse
     {
-        $siteDate = SiteDate::create($request->validated());
-        return response()->json([
-            'message' => 'Site date created successfully',
-            'data' => new SiteDateResource($siteDate)
-        ], 201);
+        $data = $request->validated();
+        $siteDate = SiteDate::create($data);
+        return $this->sendResponse(
+            data: new SiteDateResource($siteDate),
+            message: 'site date created successfully', code: 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Get(
      * path="/site-dates/{id}",
@@ -122,21 +127,24 @@ class SiteDateController extends Controller
      * )
      * )
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        $siteDate = SiteDate::findOrFail($id);
-        return response()->json([
-            'message' => 'Site date found successfully',
-            'data' => new SiteDateResource($siteDate)
-        ]);
+        $siteDate = SiteDate::query()->find($id);
+        if (!$siteDate) {
+            return $this->sendError('site date not found', code: 404);
+        }
+        return $this->sendResponse(
+            data: new SiteDateResource($siteDate),
+            message: 'site date retrieved successfully');
+
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateSiteDateRequest $request
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Put(
      * path="/site-dates/{id}",
@@ -173,21 +181,24 @@ class SiteDateController extends Controller
      * )
      *
      */
-    public function update(UpdateSiteDateRequest $request, int $id)
+    public function update(UpdateSiteDateRequest $request, int $id): JsonResponse
     {
-        $siteDate = SiteDate::findOrFail($id);
-        $siteDate->update($request->validated());
-        return response()->json([
-            'message' => 'Site date updated successfully',
-            'data' => new SiteDateResource($siteDate)
-        ]);
+        $siteDate = SiteDate::query()->find($id);
+        if (!$siteDate) {
+            return $this->sendError('site date not found', code: 404);
+        }
+        $data = $request->validated();
+        $siteDate->update($data);
+        return $this->sendResponse(
+            data: new SiteDateResource($siteDate),
+            message: 'site date updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Delete(
      * path="/site-dates/{id}",
@@ -219,11 +230,16 @@ class SiteDateController extends Controller
      * )
      * )
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
         $this->middleware('admin');
-        $siteDate = SiteDate::findOrFail($id);
+        $siteDate = SiteDate::query()->find($id);
+        if (!$siteDate) {
+            return $this->sendError('site date not found', code: 404);
+        }
         $siteDate->delete();
-        return response()->json(['message' => 'Site date deleted successfully']);
+        return $this->sendResponse(
+            data: null,
+            message: 'site date deleted successfully');
     }
 }

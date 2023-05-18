@@ -27,6 +27,9 @@ class UpdateSiteRequest extends FormRequest
             "departement_id" => "nullable",
             "name" => "nullable|string|max:255",
             "description" => "nullable|string",
+            "address" => "nullable|string",
+            "is_date_required" => "nullable|boolean",
+            "is_active" => "nullable|boolean",
             "price" => "nullable|alpha_num",
             "latitude" => "nullable",
             "longitude" => "nullable"

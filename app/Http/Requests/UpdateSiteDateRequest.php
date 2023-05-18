@@ -25,9 +25,7 @@ class UpdateSiteDateRequest extends FormRequest
     {
         return [
             'site_id' => 'nullable|integer|exists:sites,id',
-            'date_' => 'nullable|date',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i',
+            'date_visite' => 'nullable|date',
         ];
     }
 }

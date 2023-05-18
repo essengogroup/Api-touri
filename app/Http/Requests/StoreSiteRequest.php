@@ -27,6 +27,9 @@ class StoreSiteRequest extends FormRequest
             "departement_id" => "required",
             "name" => "required|string|max:255",
             "description" => "nullable|string",
+            "address" => "nullable|string",
+            "is_date_required" => "nullable|boolean",
+            "is_active" => "nullable|boolean",
             "price" => "required",
             "latitude" => "nullable",
             "longitude" => "nullable"

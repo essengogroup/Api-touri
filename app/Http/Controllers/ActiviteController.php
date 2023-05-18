@@ -7,12 +7,14 @@ use App\Http\Requests\StoreActiviteRequest;
 use App\Http\Requests\UpdateActiviteRequest;
 use App\Http\Resources\ActiviteResource;
 use App\Models\Activite;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ActiviteController extends Controller
+class ActiviteController extends ApiController
 {
     public function addSite(AddSiteToActiveRequest $request, $id)
     {
+        // TODO: check if site exists
         $activite = Activite::findOrFail($id);
         if ($activite->sites->contains($request->site_id)) {
             return response()->json([
@@ -28,92 +30,146 @@ class ActiviteController extends Controller
             'data' => new ActiviteResource($activite)
         ]);
     }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $activite = Activite::orderBy('created_at', 'desc')->get();
-        return response()->json([
-            'message' => 'Activite found successfully',
-            'data' => ActiviteResource::collection($activite)
-        ]);
+        $activite = Activite::query()
+            ->orderBy('created_at', 'desc')->get();
+        return $this->sendResponse(
+            data: ActiviteResource::collection($activite),
+            message: 'Activites retrieved successfully.'
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreActiviteRequest $request
+     * @return JsonResponse
      */
-    public function store(StoreActiviteRequest $request)
+    public function store(StoreActiviteRequest $request): JsonResponse
     {
         $data = $request->validated();
         if ($request->hasFile('image_path')) {
             $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
         }
-        // $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
         $activite = Activite::create($data);
-        return response()->json([
-            'message' => 'Activite created successfully',
-            'data' => new ActiviteResource($activite)
-        ]);
+        return $this->sendResponse(
+            data: new ActiviteResource($activite),
+            message: 'Activite created successfully.',
+            code: 201
+        );
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        $activite = Activite::findOrFail($id);
-        return response()->json([
-            'message' => 'Activite found successfully',
-            'data' => new ActiviteResource($activite)
-        ]);
+        $activite = Activite::query()
+            ->with('sites')
+            ->find($id);
+        if (is_null($activite)) {
+            return $this->sendError(
+                error: 'Activite not found.',
+                code: 404
+            );
+        }
+
+        return $this->sendResponse(
+            data: new ActiviteResource($activite),
+            message: 'Activite retrieved successfully.'
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateActiviteRequest $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function update(UpdateActiviteRequest $request, $id)
+    public function update(UpdateActiviteRequest $request, int $id): JsonResponse
     {
-        $activite = Activite::findOrFail($id);
+        $activite = Activite::query()->find($id);
+        if (is_null($activite)) {
+            return $this->sendError(
+                error: 'Activite not found.',
+                code: 404
+            );
+        }
         $data = $request->validated();
         if ($request->hasFile('image_path')) {
             $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
         }
-        // $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'activites');
         $activite->update($data);
-        return response()->json([
-            'message' => 'Activite updated successfully',
-            'data' => new ActiviteResource($activite)
-        ]);
+        return $this->sendResponse(
+            data: new ActiviteResource($activite),
+            message: 'Activite updated successfully.'
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $this->middleware('admin');
 
-        $activite = Activite::findOrFail($id);
+        $activite = Activite::query()->find($id);
+        if (is_null($activite)) {
+            return $this->sendError(
+                error: 'Activite not found.',
+                code: 404
+            );
+        }
         $activite->delete();
-        return response()->json([
-            'message' => 'Activite deleted successfully',
-            'data' => new ActiviteResource($activite)
-        ]);
+        return $this->sendResponse(
+            data: null,
+            message: 'Activite deleted successfully.'
+        );
+    }
+
+    public function addSiteToActivite(int $id, int $site_id): JsonResponse
+    {
+        $activite = Activite::query()->find($id);
+        if (is_null($activite)) {
+            return $this->sendError(
+                error: 'Activite not found.',
+                code: 404
+            );
+        }
+        $activite->sites()->sync($site_id);
+        return $this->sendResponse(
+            data: new ActiviteResource($activite),
+            message: 'Site added successfully.'
+        );
+    }
+
+    public function removeSiteToActivite(int $id, int $site_id): JsonResponse
+    {
+        $activite = Activite::query()->find($id);
+        if (is_null($activite)) {
+            return $this->sendError(
+                error: 'Activite not found.',
+                code: 404
+            );
+        }
+        $activite->sites()->detach($site_id);
+        return $this->sendResponse(
+            data: new ActiviteResource($activite),
+            message: 'Site removed successfully.'
+        );
     }
 }

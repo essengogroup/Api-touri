@@ -6,17 +6,19 @@ use App\Http\Requests\StoreDepartementRequest;
 use App\Http\Requests\UpdateDepartementRequest;
 use App\Http\Resources\DepartementResource;
 use App\Models\Departement;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use OpenApi\Annotations as OA;
 
-class DepartementController extends Controller
+class DepartementController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      *
-     *@OA\Get(
+     * @OA\Get(
      *  path="/departements",
      *  operationId="getDepartementsList",
      *  tags={"Departements"},
@@ -39,17 +41,36 @@ class DepartementController extends Controller
      * )
      * )
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $departements = Departement::orderBy('created_at', 'desc')->get();
-        return DepartementResource::collection($departements);
+        $departments = Departement::query()
+            ->when(request('search'), function ($query) {
+                $query->where('name', 'like', '%' . request('search') . '%');
+            })
+            ->when(request('sort'), function ($query) {
+                $sort = explode('|', request('sort'));
+                $query->orderBy($sort[0], $sort[1]);
+            }, function ($query) {
+                $query->orderBy('created_at', 'desc');
+            })
+            ->when(request('limit'), function ($query) {
+                $query->limit(request('limit'));
+            })
+            ->when(request('offset'), function ($query) {
+                $query->offset(request('offset'));
+            })
+            ->orderBy('created_at', 'desc');
+        return $this->sendResponse(
+            data: DepartementResource::collection($departments->get()),
+            message: 'list of departements'
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreDepartementRequest $request
+     * @return JsonResponse
      *
      * @OA\Post(
      * path="/departements",
@@ -75,24 +96,24 @@ class DepartementController extends Controller
      * )
      * )
      */
-    public function store(StoreDepartementRequest $request)
+    public function store(StoreDepartementRequest $request): JsonResponse
     {
         $data = $request->validated();
         if ($request->hasFile('image_path')) {
             $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'departements');
         }
         $departement = Departement::create($data);
-        return response()->json([
-            'message' => 'Departement created successfully',
-            'data' => new DepartementResource($departement)
-        ]);
+        return $this->sendResponse(
+            data: new DepartementResource($departement),
+            message: 'departement created successfully'
+        );
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Get(
      * path="/departements/{id}",
@@ -123,21 +144,24 @@ class DepartementController extends Controller
      * )
      * )
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        $departement = Departement::findOrFail($id);
-        return response()->json([
-            'message' => 'Departement found successfully',
-            'data' => new DepartementResource($departement)
-        ]);
+        $departement = Departement::query()->find($id);
+        if (!$departement) {
+            return $this->sendError(error: 'departement not found');
+        }
+        return $this->sendResponse(
+            data: new DepartementResource($departement),
+            message: 'departement retrieved successfully'
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateDepartementRequest $request
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Put(
      * path="/departements/{id}",
@@ -172,25 +196,49 @@ class DepartementController extends Controller
      * )
      * )
      */
-    public function update(UpdateDepartementRequest $request, $id)
+    public function update(UpdateDepartementRequest $request, int $id): JsonResponse
     {
-        $departement = Departement::findOrFail($id);
-        $data = $request->validated();
-        if ($request->hasFile('image_path')) {
-            $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'departements');
+        $departement = Departement::find($id);
+        if (!$departement) {
+            return $this->sendError(error: 'departement not found');
         }
+        $data = $request->validated();
         $departement->update($data);
-        return response()->json([
-            'message' => 'Departement updated successfully',
-            'data' => new DepartementResource($departement)
-        ]);
+        return $this->sendResponse(
+            data: new DepartementResource($departement),
+            message: 'departement updated successfully'
+        );
     }
+
+    /**
+     * Update the specified resource in storage.
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function updateImagePath(Request $request, int $id): JsonResponse
+    {
+        $departement = Departement::find($id);
+        if (!$departement) {
+            return $this->sendError(error: 'departement not found');
+        }
+        $data = $request->validate([
+            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        $data['image_path'] = saveFileToStorageDirectory($request, 'image_path', 'departements');
+        $departement->update($data);
+        return $this->sendResponse(
+            data: new DepartementResource($departement),
+            message: 'departement updated successfully'
+        );
+    }
+
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Delete(
      * path="/departements/{id}",
@@ -224,14 +272,17 @@ class DepartementController extends Controller
      * )
      * )
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $this->middleware('admin');
-        $departement = Departement::findOrFail($id);
+        $departement = Departement::query()->find($id);
+        if (!$departement) {
+            return $this->sendError(error: 'departement not found');
+        }
         $departement->delete();
-        return response()->json([
-            'message' => 'Departement deleted successfully',
-            'data' => new DepartementResource($departement)
-        ]);
+        return $this->sendResponse(
+            data: null,
+            message: 'departement deleted successfully'
+        );
     }
 }

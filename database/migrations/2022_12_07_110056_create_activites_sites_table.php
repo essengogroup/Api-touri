@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('activites_sites', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained()->onDelete('cascade');
-            $table->foreignId('activite_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['obligatoire', 'optionnel'])->default('obligatoire');
+//            $table->foreignId('activite_id')->constrained()->onDelete('cascade');
+//            $table->enum('type', ['obligatoire', 'optionnel'])->default('obligatoire');
             $table->float('price')->nullable();
         });
     }

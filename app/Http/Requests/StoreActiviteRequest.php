@@ -27,6 +27,7 @@ class StoreActiviteRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'image_path' => 'nullable',
+            'price' => 'nullable|numeric',
         ];
     }
 }

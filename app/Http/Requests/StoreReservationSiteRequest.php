@@ -26,10 +26,9 @@ class StoreReservationSiteRequest extends FormRequest
         return [
             'site_id' => 'required|integer|exists:sites,id',
             'user_id' => 'required|integer|exists:users,id',
-            'site_date_id' => 'required|integer|exists:site_dates,id',
             'commentaire' => 'nullable|string',
-            'nb_personnes' => 'nullable|integer',
-            'price' => 'nullable|numeric',
+            'nb_personnes' => 'required|integer',
+//            'price' => 'nullable|numeric',
             'activites' => 'nullable|array',
             'activites.*' => 'nullable|integer|exists:activites,id'
         ];

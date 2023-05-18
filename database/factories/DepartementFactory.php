@@ -19,7 +19,7 @@ class DepartementFactory extends Factory
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->text,
-            'image_path' => 'https://picsum.photos/200/300',
+            'image_path' => $this->faker->imageUrl(),
         ];
     }
 }

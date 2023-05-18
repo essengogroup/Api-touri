@@ -4,12 +4,14 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+
 use App\Models\Activite;
 use App\Models\Departement;
 use App\Models\Site;
 use App\Models\User;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +22,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Role::create(['name' => 'admin']);
+        Role::create(['name' => 'client']);
+
+        $admin = User::factory()->create([
+            'email' => 'super@admin.com',
+        ]);
+        $admin->assignRole('admin');
+
+        $clients = User::factory(10)->create();
+        $clients->each(function ($client) {
+            $client->assignRole('client');
+        });
+
+        $departements = Departement::factory(10)->create();
+        $departements->each(function ($departement) {
+            $departement->sites()->saveMany(Site::factory(10)
+                ->has(Activite::factory()->count(3))
+                ->make());
+        });
+
+
         /*         $departementDatas = json_decode(file_get_contents(storage_path('mocks') . '/departements.json'), true);
         $siteDatas = json_decode(file_get_contents(storage_path('mocks') . '/sites.json'), true);
 
@@ -88,16 +111,5 @@ class DatabaseSeeder extends Seeder
 
         $reservations = \App\Models\ReservationSite::factory(10)->create();
  */
-
-        // create role
-        $admin = User::factory()->create([
-            'full_name' => 'super admin',
-            'email' => 'super@admin.com',
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        ]);
-        $role1 = \Spatie\Permission\Models\Role::create(['name' => 'admin']);
-        $role2 = \Spatie\Permission\Models\Role::create(['name' => 'user']);
-
-        $admin->assignRole($role1);
     }
 }

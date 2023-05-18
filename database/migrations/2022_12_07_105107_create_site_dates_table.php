@@ -11,14 +11,12 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('site_dates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('site_id')->constrained()->onDelete('cascade');
-            $table->date('date_');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->foreignIdFor(\App\Models\Site::class)->constrained()->cascadeOnDelete();
+            $table->date('date_visite');
             $table->timestamps();
         });
     }
@@ -28,7 +26,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('site_dates');
     }
