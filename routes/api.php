@@ -42,8 +42,8 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     Route::post('activite/{activite}/site', [ActiviteController::class, 'addSite']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::apiResource('user', UserController::class)->except(['index', 'store', 'update']);
-        Route::post('user/{user}', [UserController::class, 'update']);
+        Route::apiResource('user', UserController::class)->except(['index', 'store']);
+        Route::post('user/{user}', [UserController::class, 'updateProfileImage']);
 
         Route::apiResource('reservation-site', ReservationSiteController::class);
         Route::get('reservation-site/user/{user}', [ReservationSiteController::class, 'getReservationSiteByUser']);

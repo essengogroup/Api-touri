@@ -44,6 +44,7 @@ class DepartementController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $departments = Departement::query()
+            ->with(['sites'])
             ->when(request('search'), function ($query) {
                 $query->where('name', 'like', '%' . request('search') . '%');
             })

@@ -20,7 +20,10 @@ class SiteDateFactory extends Factory
             'departement_id' => $this->faker->numberBetween(1, 10),
             'name' => $this->faker->name,
             'description' => $this->faker->text,
+            'address' => $this->faker->address,
             'price' => $this->faker->numberBetween(100, 1000),
+            'is_date_required' => $this->faker->boolean,
+            'is_active' => $this->faker->boolean,
             'latitude' => $this->faker->latitude,
             'longitude' => $this->faker->longitude,
         ];

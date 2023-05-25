@@ -9,10 +9,10 @@ class SiteResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param \Illuminate\Http\Request $request
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
@@ -21,11 +21,11 @@ class SiteResource extends JsonResource
             'price' => $this->price,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'departement' => $this->departement,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
+            'departement' => new DepartementResource($this->whenLoaded('departement')),
             'medias' => MediaResource::collection($this->medias),
-            'siteDates' => SiteDateResource::collection($this->siteDates),
+            /*'siteDates' => SiteDateResource::collection($this->whenLoaded('siteDates')),
             'activites' => $this->activites->map(function ($activite) {
                 return [
                     'id' => $activite->id,
@@ -39,7 +39,7 @@ class SiteResource extends JsonResource
                         'price' => $activite->pivot->price
                     ]
                 ];
-            })
+            })*/
         ];
     }
 }

@@ -24,12 +24,12 @@ class Media extends Model
 {
     use HasFactory;
 
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
+    /*    public function __construct(array $attributes = [])
+        {
+            parent::__construct($attributes);
 
-        $this->setAttribute('type', ['image', 'video']);
-    }
+            $this->setAttribute('type', ['image', 'video']);
+        }*/
 
     protected $fillable = [
         'name',
@@ -42,7 +42,6 @@ class Media extends Model
     protected $casts = [
         'is_main' => 'boolean',
         'site_id' => 'integer',
-        'type' => 'string',
     ];
 
     /**

@@ -17,10 +17,11 @@ class SitesController extends ApiController
     /**
      * Display the specified resource.
      *
+     * @param AddSiteToActiveRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function addActivite(AddSiteToActiveRequest $request, $id)
+    public function addActivite(AddSiteToActiveRequest $request, int $id): JsonResponse
     {
         // TODO: check if activite exists
         $site = Site::findOrFail($id);
@@ -48,7 +49,7 @@ class SitesController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $sites = Site::query()
-            ->with(['activites'])
+            ->with(['departement', 'medias'])
             ->when($request->has('name'), function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->name . '%');
             })
@@ -57,9 +58,13 @@ class SitesController extends ApiController
             })
             ->when($request->has('sort'), function ($query) use ($request) {
                 $query->orderBy($request->sort, $request->has('order') ? $request->order : 'asc');
-            })
-            ->paginate($request->has('per_page') ? $request->per_page : 10);
-        return $this->respondWithPagination($sites, new SiteResource($sites));
+            })->get();
+//            ->paginate($request->has('per_page') ? $request->per_page : 10);
+//        return $this->respondWithPagination($sites, new SiteResource($sites));
+        return $this->sendResponse(
+            data: SiteResource::collection($sites),
+            message: 'Sites retrieved successfully'
+        );
     }
 
     /**

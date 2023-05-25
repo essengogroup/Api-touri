@@ -57,6 +57,7 @@ class Site extends Model
         'is_active' => 'boolean',
     ];
 
+//    protected $with = ['departement', 'medias', 'siteDates', 'activites'];
 
     /**
      * Get the departement that owns the site.

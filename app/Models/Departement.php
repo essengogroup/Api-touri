@@ -30,6 +30,8 @@ class Departement extends Model
         'image_path',
     ];
 
+//    protected $with = ['sites'];
+
     public function sites(): HasMany
     {
         return $this->hasMany(Site::class);

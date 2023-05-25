@@ -5,8 +5,9 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 
-use App\Models\Activite;
+use App\Constants\RoleConstants;
 use App\Models\Departement;
+use App\Models\Media;
 use App\Models\Site;
 use App\Models\User;
 use Faker\Factory;
@@ -20,26 +21,66 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'client']);
+        $this->call(RolesTableSeeder::class);
 
         $admin = User::factory()->create([
             'email' => 'super@admin.com',
         ]);
-        $admin->assignRole('admin');
+        $admin->assignRole(RoleConstants::ADMIN);
 
         $clients = User::factory(10)->create();
         $clients->each(function ($client) {
-            $client->assignRole('client');
+            $client->assignRole(RoleConstants::CLIENT);
+        });
+        $departementDatas = json_decode(file_get_contents(storage_path('mocks') . '/departements.json'), true);
+        $siteDatas = json_decode(file_get_contents(storage_path('mocks') . '/sites.json'), true);
+        /*$departements = Departement::factory()->create([
+            'name' => $departementDatas['name'],
+            'description' => Factory::create()->text(200),
+            'image_path' => Factory::create()->imageUrl(640, 480, 'paris', true),
+        ]);*/
+        $departements = collect($departementDatas)
+            ->map(function ($departementData) {
+                Departement::factory()->create([
+                    'name' => $departementData['name'],
+                    'description' => Factory::create()->text(200)
+                ]);
+            });
+        Departement::all()->each(function ($departement) use ($siteDatas) {
+            $departement->sites()->createMany(
+                collect($siteDatas)->filter(function ($siteData) use ($departement) {
+                    return $siteData['departement'] === $departement->name;
+                })->map(function ($siteData) {
+                    return [
+                        'name' => $siteData['name'],
+                        'description' => $siteData['description'],
+                        'price' =>
+                            Factory::create()->numberBetween(1000, 100000),
+                        'latitude' => Factory::create()->latitude,
+                        'longitude' => Factory::create()->longitude,
+                    ];
+                })->toArray()
+            );
+
+            /*$departement->sites()->createMany(
+                Site::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create([
+                    'departement_id' => $departement->id,
+                ])->make()->toArray()
+            );*/
         });
 
-        $departements = Departement::factory(10)->create();
-        $departements->each(function ($departement) {
-            $departement->sites()->saveMany(Site::factory(10)
-                ->has(Activite::factory()->count(3))
-                ->make());
+        Site::all()->each(function ($site) {
+            $site->medias()->createMany(
+                Media::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create([
+                    'site_id' => $site->id,
+                ])->make()->toArray()
+            );
         });
 
 
