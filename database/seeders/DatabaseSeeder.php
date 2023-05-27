@@ -4,12 +4,23 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Activite;
+
+use App\Constants\RoleConstants;
+use App\Models\Assurance;
+use App\Models\Comment;
 use App\Models\Departement;
+use App\Models\Guide;
+use App\Models\Hebergement;
+use App\Models\Like;
+use App\Models\Media;
+use App\Models\Restaurant;
+use App\Models\Share;
 use App\Models\Site;
+use App\Models\Transport;
 use App\Models\User;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,86 +29,134 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        /*         $departementDatas = json_decode(file_get_contents(storage_path('mocks') . '/departements.json'), true);
+        $departementDatas = json_decode(file_get_contents(storage_path('mocks') . '/departements.json'), true);
         $siteDatas = json_decode(file_get_contents(storage_path('mocks') . '/sites.json'), true);
 
+        $this->call(RolesTableSeeder::class);
 
-        User::factory()->create([
-            'full_name' => 'super admin',
+        $admin = User::factory()->create([
             'email' => 'super@admin.com',
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         ]);
-        User::factory(10)->create();
+        $admin->assignRole(RoleConstants::ADMIN);
+
+        $clients = User::factory(10)->create();
+        $clients->each(function ($client) {
+            $client->assignRole(RoleConstants::CLIENT);
+        });
 
 
-        collect($departementDatas)->each(function ($departementData) use ($siteDatas) {
-            $departement = Departement::create([
-                'name' => $departementData['name'],
-                'description' => Factory::create()->text(200),
-                'image_path' => Factory::create()->imageUrl(640, 480, 'paris', true),
-            ]);
+        /*$departements = Departement::factory()->create([
+            'name' => $departementDatas['name'],
+            'description' => Factory::create()->text(200),
+            'image_path' => Factory::create()->imageUrl(640, 480, 'paris', true),
+        ]);*/
+        collect($departementDatas)
+            ->map(function ($departementData) {
+                Departement::factory()->create([
+                    'name' => $departementData['name'],
+                    'description' => Factory::create()->text(200)
+                ]);
+            });
+        Departement::all()->each(function ($departement) use ($siteDatas) {
             $departement->sites()->createMany(
-                collect($siteDatas)->filter(function ($siteData) use ($departementData) {
-                    return $siteData['departement'] === $departementData['name'];
+                collect($siteDatas)->filter(function ($siteData) use ($departement) {
+                    return $siteData['departement'] === $departement->name;
                 })->map(function ($siteData) {
                     return [
                         'name' => $siteData['name'],
                         'description' => $siteData['description'],
                         'price' =>
-                        Factory::create()->numberBetween(1000, 100000),
+                            Factory::create()->numberBetween(1000, 100000),
                         'latitude' => Factory::create()->latitude,
                         'longitude' => Factory::create()->longitude,
                     ];
                 })->toArray()
             );
+
+            /*
+             * $departement->sites()->createMany(
+                Site::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create([
+                    'departement_id' => $departement->id,
+                ])->make()->toArray()
+            );
+            */
         });
 
-        $activites = Activite::factory(10)->create();
-
-        $sites = Site::all();
-        $sites->map(function ($site) use ($activites) {
+        Site::all()->each(function ($site) {
             $site->medias()->createMany(
-                collect(range(1, 5))->map(function () {
-                    return [
-                        'name' => Factory::create()->name,
-                        'path' => Factory::create()->imageUrl(640, 480, 'cat', true),
-                    ];
-                })->toArray()
+                Media::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create([
+                    'site_id' => $site->id,
+                ])->make()->toArray()
             );
-            $site->siteDates()->createMany(
-                collect(range(1, 5))->map(function () {
-                    return [
-                        'date_' => Factory::create()->dateTimeBetween('now', '+1 day'),
-                        'start_time' => Factory::create()->time('H:i'),
-                        'end_time' => Factory::create()->time('H:i'),
-                    ];
-                })->toArray()
+            $site->comments()->createMany(
+                Comment::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create([
+                    'commentable_id' => $site->id,
+                    'commentable_type' => Site::class,
+                ])->make()->toArray()
             );
-            $site->activites()->attach(
-                $activites->random(5)->map(function ($activite) {
-                    return [
-                        'activite_id' => $activite->id,
-                        'type' => Factory::create()->randomElement(['optionnel', 'obligatoire']),
-                        'price' => Factory::create()->numberBetween(1000, 100000),
-                    ];
-                })->toArray()
+
+            $site->likes()->createMany(
+                Like::factory(
+                    Factory::create()->numberBetween(4, 100)
+                )->create([
+                    'likeable_id' => $site->id,
+                    'likeable_type' => Site::class,
+                ])->make()->toArray()
+            );
+
+            $site->shares()->createMany(
+                Share::factory(
+                    Factory::create()->numberBetween(4, 100)
+                )->create([
+                    'shareable_id' => $site->id,
+                    'shareable_type' => Site::class,
+                ])->make()->toArray()
+            );
+
+            $site->guides()->attach(
+                Guide::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create()->pluck('id')
+            );
+
+            $site->assurances()->attach(
+                Assurance::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create()->pluck('id')
+            );
+
+
+            $site->restaurants()->attach(
+                Restaurant::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create()->pluck('id')
+            );
+
+            $site->hebergements()->attach(
+                Hebergement::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create()->pluck('id')
+            );
+
+            $site->transports()->attach(
+                Transport::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create()->pluck('id')
+            );
+
+            $site->restaurants()->attach(
+                Restaurant::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create()->pluck('id')
             );
         });
-
-        $reservations = \App\Models\ReservationSite::factory(10)->create();
- */
-
-        // create role
-        $admin = User::factory()->create([
-            'full_name' => 'super admin',
-            'email' => 'super@admin.com',
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        ]);
-        $role1 = \Spatie\Permission\Models\Role::create(['name' => 'admin']);
-        $role2 = \Spatie\Permission\Models\Role::create(['name' => 'user']);
-
-        $admin->assignRole($role1);
     }
 }

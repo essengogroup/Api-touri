@@ -17,10 +17,15 @@ class SiteDateFactory extends Factory
     public function definition()
     {
         return [
-            'site_id' => \App\Models\Site::factory(),
-            'date_' => $this->faker->date(),
-            'start_time' => $this->faker->time(),
-            'end_time' => $this->faker->time(),
+            'departement_id' => $this->faker->numberBetween(1, 10),
+            'name' => $this->faker->name,
+            'description' => $this->faker->text,
+            'address' => $this->faker->address,
+            'price' => $this->faker->numberBetween(100, 1000),
+            'is_date_required' => $this->faker->boolean,
+            'is_active' => $this->faker->boolean,
+            'latitude' => $this->faker->latitude,
+            'longitude' => $this->faker->longitude,
         ];
     }
 }

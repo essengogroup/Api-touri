@@ -9,10 +9,10 @@ class SiteResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param \Illuminate\Http\Request $request
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
@@ -21,25 +21,20 @@ class SiteResource extends JsonResource
             'price' => $this->price,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'departement' => $this->departement,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
+            'departement' => new DepartementResource($this->whenLoaded('departement')),
             'medias' => MediaResource::collection($this->medias),
-            'siteDates' => SiteDateResource::collection($this->siteDates),
-            'activites' => $this->activites->map(function ($activite) {
-                return [
-                    'id' => $activite->id,
-                    'name' => $activite->name,
-                    'description' => $activite->description,
-                    'image_path' => url($activite->image_path),
-                    'created_at' => $activite->created_at,
-                    'updated_at' => $activite->updated_at,
-                    'pivot' => [
-                        'type' => $activite->pivot->type,
-                        'price' => $activite->pivot->price
-                    ]
-                ];
-            })
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
+//            'countComments' => $this->comments->count(),
+            'activites' => ActiviteResource::collection($this->whenLoaded('activites')),
+            'likesCount' => $this->likes_count,
+            'sharesCount' => $this->shares_count,
+            'guides' => GuideResource::collection($this->whenLoaded('guides')),
+            'assurances' => AssuranceResource::collection($this->whenLoaded('assurances')),
+            'hebergements' => HebergementResource::collection($this->whenLoaded('hebergements')),
+            'restaurants' => RestaurantResource::collection($this->whenLoaded('restaurants')),
+            'transports' => TransportResource::collection($this->whenLoaded('transports')),
         ];
     }
 }

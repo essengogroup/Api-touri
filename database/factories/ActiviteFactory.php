@@ -19,14 +19,8 @@ class ActiviteFactory extends Factory
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->text,
-            // 'image_path' => $this->faker->image(
-            //     storage_path('app/public/activites'),
-            //     640,
-            //     480,
-            //     null,
-            //     false
-            // ),
             'image_path' => $this->faker->imageUrl(640, 480, 'sports', true),
+            'price' => $this->faker->randomFloat(2, 0, 100),
         ];
     }
 }

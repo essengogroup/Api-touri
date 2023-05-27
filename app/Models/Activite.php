@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @OA\Schema(
@@ -24,13 +26,47 @@ class Activite extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'description',
+        'image_path',
+        'price',
+    ];
+
+    protected $casts = [
+        'price' => 'float',
+    ];
 
     /**
      * Get the sites for the activite.
      */
-    public function sites()
+    public function sites(): BelongsToMany
     {
         return $this->belongsToMany(Site::class, 'activites_sites')->withPivot('type', 'price');
+    }
+
+    public function medias(): HasMany
+    {
+        return $this->hasMany(MediaActivite::class);
+    }
+
+    public function reservationSites(): BelongsToMany
+    {
+        return $this->belongsToMany(ReservationSite::class, 'reservation_activites');
+    }
+
+    public function comments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function likes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function shares(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Share::class, 'shareable');
     }
 }

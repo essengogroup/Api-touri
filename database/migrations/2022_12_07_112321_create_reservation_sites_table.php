@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,15 +14,16 @@ return new class extends Migration
     {
         Schema::create('reservation_sites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('site_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('site_date_id')->constrained()->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Site::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->onDelete('cascade');
+            $table->date('date_reservation');
             $table->float('price');
             $table->integer('nb_personnes')->default(1);
             $table->boolean('is_paid')->default(false);
-            $table->enum('status', ['pending', 'accepted', 'refused', 'canceled'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'refused', 'canceled', 'paid'])->default('pending');
             $table->text('commentaire')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -3,19 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMediaRequest;
-use App\Http\Requests\UpdateMediaRequest;
 use App\Http\Resources\MediaResource;
 use App\Models\Media;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 
-class MediaController extends Controller
+class MediaController extends ApiController
 {
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      *
      * @OA\Get(
      * path="/medias",
@@ -41,15 +42,27 @@ class MediaController extends Controller
      * )
      *
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        return MediaResource::collection(Media::orderBy('created_at', 'desc')->get());
+        $request->validate([
+            'type' => 'in:image,video',
+        ]);
+        $medias = Media::query()
+            ->when($request->has('type'), fn($query) => $query->where('type', $request->get('type'))
+                ->orderBy('created_at', 'desc')
+                ->get())
+            ->when(!$request->has('type'), fn($query) => $query->orderBy('created_at', 'desc')
+                ->get());
+        return $this->sendResponse(
+            data: MediaResource::collection($medias),
+            message: 'list of medias');
     }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreMediaRequest $request
+     * @return JsonResponse
      *
      * @OA\Post(
      * path="/medias",
@@ -81,25 +94,24 @@ class MediaController extends Controller
      * )
      * )
      */
-    public function store(StoreMediaRequest $request)
+    public function store(StoreMediaRequest $request): JsonResponse
     {
         $data = $request->validated();
-        // $data['path'] = saveFileToStorageDirectory($request, 'path', 'medias');
         if ($request->hasFile('path')) {
             $data['path'] = saveFileToStorageDirectory($request, 'path', 'medias');
         }
         $media = Media::create($data);
-        return response()->json([
-            'message' => 'Media created successfully',
-            'data' => new MediaResource($media)
-        ], 201);
+        return $this->sendResponse(
+            data: new MediaResource($media),
+            message: 'Media created successfully', code: 201);
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Get(
      * path="/medias/{id}",
@@ -134,20 +146,22 @@ class MediaController extends Controller
      * )
      * )
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        $media = Media::findOrFail($id);
-        return response()->json([
-            'message' => 'Media found successfully',
-            'data' => new MediaResource($media)
-        ]);
+        $media = Media::query()->find($id);
+        if (!$media) {
+            return $this->sendError('Media not found');
+        }
+        return $this->sendResponse(
+            data: new MediaResource($media),
+            message: 'Media found successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Media  $media
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      *
      * @OA\Delete(
      * path="/medias/{id}",
@@ -182,13 +196,16 @@ class MediaController extends Controller
      * )
      *
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
         $this->middleware('admin');
-        $media = Media::findOrFail($id);
+        $media = Media::query()->find($id);
+        if (!$media) {
+            return $this->sendError('Media not found');
+        }
         $media->delete();
-        return response()->json([
-            'message' => 'Media deleted successfully',
-        ]);
+        return $this->sendResponse(
+            data: null,
+            message: 'Media deleted successfully');
     }
 }

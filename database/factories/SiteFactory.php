@@ -14,10 +14,10 @@ class SiteFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'departement_id' => \App\Models\Departement::factory(),
+            'departement_id' => $this->faker->numberBetween(1, 10),
             'name' => $this->faker->name,
             'description' => $this->faker->text,
             'price' => $this->faker->randomFloat(2, 0, 1000),

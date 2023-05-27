@@ -2,171 +2,332 @@
 
 Api pour gérer les réservations des touristes des utilisateurs de l'application touri-touri.
 
+## Mise en place du projet
+
 ### Prérequis
 
--   PHP 8.1^
--   Composer
--   MySQL 8.0^
--   Node 14.17.6^
--   NPM 6.14.15^
+- PHP 8.1^
+- Composer 2.1.9^
+- MySQL 8.0^
+- Node 14.17.6^
+- NPM 6.14.15^
 
 ### Installation
 
--   Cloner le projet
--   Se placer dans le dossier du projet
--   Lancer la commande `composer install`
--   Lancer la commande `npm install`
--   Lancer la commande `npm run build`
--   Copier le fichier `.env.example` et le renommer en `.env`
--   Modifier les variables d'environnement dans le fichier `.env`
--   Lancer la commande `php artisan migrate` pour créer les tables dans la base de données
+- Cloner le projet sur votre machine locale `git clone https://github.com/essengogroup/Api-touri.git`.
+- Se placer dans le dossier du projet `cd Api-touri`.
+- Lancer la commande `composer install` pour installer les dépendances PHP.
+- Lancer la commande `npm install`.
+- Lancer la commande `npm run build`.
+- Copier le fichier `.env.example` et le renommer en `.env`.
+- Modifier les variables d'environnement dans le fichier `.env` (base de données, mail, etc.) selon votre configuration.
+- Lancer la commande `php artisan migrate` pour créer les tables dans la base de données.
+- Lancer la commande `php artisan db:seed` pour remplir les tables avec des données de test.
 
-### structure de la Base de données
+## TODO
 
-### users
-    -   id
-    -   full_name
-    -   phone
-    -   profile_picture?
-    -   email
-    -   address?
-    -   isActive?
-    -   password
-    -   created_at
-    -   updated_at
+### ux
+- sur l'interface de reservation d'un site, demander à l'utilisateur de choisir une date de visite, si la date est déjà
+  prise ou n'est pas proposé, lui proposer une autre saisir une autre date
 
-### departements
+### backend
+- renseigner l'ensemble des routes dans api.php
+- ecrire les seeder pour l'ensemble des models
+- test l'ensemble des request api
 
-    -   id
-    -   name
-    -   description?
-    -   image_path?
-    -   created_at
-    -   updated_at
+## structure de la Base de données
 
-> sites (= parcours qu'un utilisateur reserve pour sa visite)
+### User
 
--   id
--   departement_id
--   name
--   description
--   price
--   isActive?
--   created_at
--   updated_at
+    -   id | int
+    -   full_name | string
+    -   email | string (unique)
+    -   phone | string?
+    -   profile_picture | string?
+    -   address | string?
+    -   email_verified_at | datetime?
+    -   password | string
+    -   remember_token | string?
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
-> medias (= images et videos des sites)
+### Departement
 
--   id
--   site_id
--   image_path
--   default (0 ou 1)
--   created_at
--   updated_at
+    -   id | int
+    -   name | string
+    -   description | text?
+    -   image_path | string?
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
-> sites_dates (= dates disponibles pour les sites)
+### Site
 
--   id
--   site_id
--   date
--   start_time
--   end_time
--   created_at
--   updated_at
+on peut gagner un trophet si on visite tous les sites d'un departement
 
-> activites (= activités à faire sur un site)
+    -   id | int
+    -   departement_id | int (foreign key)
+    -   name | string
+    -   description | text?
+    -   address | string?
+    -   price | int
+    -   is_date_required | boolean (default: false)
+    -   is_active | boolean (default: true)
+    -   latitude | decimal
+    -   longitude | decimal
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
--   id
--   name
--   description
--   image_path?
--   created_at
--   updated_at
+### Media
 
-> activites_sites (= liste des activités liées des sites avec des activités par defaut et des activités personnalisées)
+    -   id | int
+    -   site_id | int (foreign key)
+    -   name | string?
+    -   path | string
+    -   type | string (image, video)
+    -   is_main | boolean (default: false)
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
--   id
--   site_id
--   activite_id
--   type (obligatoire, optionnel)-> par defaut obligatoire
--   price?
--   created_at
--   updated_at
+### SiteDate
 
-> reservations-sites (= réservations des sites)
+corrrespond aux dates disponibles pour les sites
 
--   id
--   user_id
--   site_id
--   date_id
--   price
--   nb_personnes
--   status (pending, accepted, refused, canceled)-> par defaut pending
--   commentaire
--   created_at
--   updated_at
+    -   id | int
+    -   site_id | int (foreign key)
+    -   date_visite | date
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
-> reservations_activites
+### Activite
 
--   id
--   reservation_id
--   activite_id
--   created_at
--   updated_at
+corrrespond aux activités à faire sur un site, on peut gagner un trophet si on fait toutes les activités d'un site
 
-> events (= événements organisés par les sites)
+    -   id | int
+    -   name | string
+    -   description | text?
+    -   image_path | string?
+    -   price | float
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
--   id
--   title
--   description
--   image_path?
--   limit_date_reservation
--   limit_date_cancel
--   created_at
--   updated_at
+### MediaActivite
 
-> places_events (= prix des événements organisés par les sites)
+    -   id | int
+    -   activite_id | int (foreign key)
+    -   name | string?
+    -   path | string
+    -   type | string (image, video)
+    -   is_main | boolean (default: false)
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
--   id
--   event_id
--   price
--   title
--   created_at
--   updated_at
+### activites_sites `pivot`
 
-> reservations_events (= réservations des événements)
+corrrespond aux activités disponibles sur un site
 
--   id
--   user_id
--   place_event_id
--   nb_personnes
--   price
--   status (pending, accepted, refused)-> par defaut pending
--   created_at
--   updated_at
+    -   id | int
+    -   site_id | int (foreign key)
+    -   activite_id | int (foreign key)
+    -   created_at | datetime (default: now)
+    -   updated_at | datetime (default: now)
 
-> trophets (= trophés gagnés par les utilisateurs)
+### ReservationSite
 
--   id
--   name
--   description
--   points
--   image_path
--   created_at
--   updated_at
+correspond aux réservations des sites
 
-> users_trophets (= trophés gagnés par les utilisateurs)
+    - id | int
+    - site_id | int (foreign key)
+    - user_id | int (foreign key)
+    - date_reservation | date
+    - price | float
+    - nb_personnes | int (default: 1)
+    - is_paid | boolean (default: false)
+    - status | (pending, accepted, refused,canceled,paid) (default: pending)
+    - commentaire | text?
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+    - deleted_at | datetime?
 
--   id
--   user_id
--   trophets_id
--   created_at
--   updated_at
+### reservations_activites `pivot`
 
-### index
+    - id | int
+    - reservation_site_id | int (foreign key)
+    - activite_id | int (foreign key)
+    - price | float
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
 
-Ce qui manque
-- raiting
-- partage sur les réseaux sociaux
-- popularité du site 
-- commentaires
+### EventTouri
+
+correspond aux événements organisés par les sites, on peut poster des événements sur l'event
+
+    - id | int
+    - name | string
+    - description | text?
+    - image_path | string
+    - date_event | date
+    - place | int?
+    - price | float
+    - status | (active, inactive) (default: active)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### ReservationEvent
+
+correspond aux réservations des événements
+
+    - id | int
+    - user_id | int (foreign key)
+    - event_id | int (foreign key)
+    - nb_persons | int (default: 1)
+    - status (pending, accepted, refused,canceled,paid) (default: pending)
+    - commentaire | text?
+    - price | float
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+    - deleted_at | datetime?
+
+### Trophet
+
+    - id | int
+    - name | string
+    - description | text?
+    - image_path | string?
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### users_trophets `pivot`
+
+    - id | int
+    - user_id | int (foreign key)
+    - trophet_id | int (foreign key)
+
+### commentaires (morph)
+
+    - id | int
+    - user_id | int (foreign key)
+    - comment | text
+    - commentable_id | int (foreign key)
+    - commentable_type | string (Site, Activite, EventTouri)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### likes (morph)
+
+    - id | int
+    - user_id | int (foreign key)
+    - site_id | int (foreign key)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### Share (morph)
+
+    - id | int
+    - user_id | int (foreign key)
+    - shareable_id | int (foreign key)
+    - shareable_type | string (Site, Activite, EventTouri)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### Raiting (morph)
+
+    - id | int
+    - user_id | int (foreign key)
+    - raitable_id | int (foreign key)
+    - raitable_type | string (Site, Activite, EventTouri)
+    - value | int (default: 0)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### Transport
+
+    - id | int
+    - name | string
+    - description | text?
+    - image_path | string?
+    - price | float
+    - is_available | boolean (default: true)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### transports_sites `pivot`
+
+    - id | int
+    - site_id | int (foreign key)
+    - transport_id | int (foreign key)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### Hebergements
+
+    - id | int
+    - name | string
+    - description | text?
+    - image_path | string?
+    - price | float
+    - address | string?
+    - phone | string?
+    - latitude | float?
+    - longitude | float?
+    - is_available | boolean (default: true)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### hebergements_sites `pivot`
+
+    - id | int
+    - site_id | int (foreign key)
+    - hebergement_id | int (foreign key)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### Restaurant
+
+    - id | int
+    - name | string
+    - description | text?
+    - image_path | string?
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### restaurants_sites `pivot`
+
+    - id | int
+    - site_id | int (foreign key)
+    - restaurant_id | int (foreign key)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### Assurance
+
+    - id | int
+    - name | string
+    - description | text?
+    - image_path | string?
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### assurances_sites `pivot`
+
+    - id | int
+    - site_id | int (foreign key)
+    - assurance_id | int (foreign key)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### Guide
+
+    - id | int
+    - name | string
+    - description | text?
+    - image_path | string?
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)
+
+### guides_sites `pivot`
+
+    - id | int
+    - site_id | int (foreign key)
+    - guide_id | int (foreign key)
+    - created_at | datetime (default: now)
+    - updated_at | datetime (default: now)

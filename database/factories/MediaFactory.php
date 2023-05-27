@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Site;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,11 +15,16 @@ class MediaFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
+        $imageUrl = 'https://picsum.photos/640/480?blur=2.webp?random=1?rand=' . uniqid();
         return [
-            'name' => fake()->name(),
-            'path' => fake()->imageUrl()
+            'site_id' => $this->faker->numberBetween(1, 10),
+            'name' => $this->faker->name,
+//            'path' => $this->faker->imageUrl(640, 480, 'paris', true),
+            'path' => $imageUrl,
+            'type' => $this->faker->randomElement(['image', 'video']),
+            'is_main' => $this->faker->boolean,
         ];
     }
 }

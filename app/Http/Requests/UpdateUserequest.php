@@ -11,7 +11,7 @@ class UpdateUserequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,7 +21,7 @@ class UpdateUserequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'full_name' => 'nullable|string|max:255',

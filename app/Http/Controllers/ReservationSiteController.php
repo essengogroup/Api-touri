@@ -7,16 +7,17 @@ use App\Http\Resources\ReservationSiteResource;
 use App\Models\Activite;
 use App\Models\ReservationSite;
 use App\Models\Site;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ReservationSiteController extends Controller
+class ReservationSiteController extends ApiController
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         // CREATE A QUERY BUILDER
         $query = ReservationSite::query();
@@ -86,159 +87,163 @@ class ReservationSiteController extends Controller
 
 
         // PAGINATE
-        $reservationSites = $query->with('site', 'user', 'siteDate', 'activites')->get();
-        return response()->json([
-            'message' => 'ReservationSites found successfully',
-            'data' => ReservationSiteResource::collection($reservationSites)
-        ]);
-        /*
-        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->paginate();
-        return response()->json([
-            'message' => 'ReservationSites found successfully',
-            'data' => ReservationSiteResource::collection($reservationSites)
-        ]); */
+        $reservationSites = $query->with('site', 'user', 'activites')->get();
+
+        return $this->sendResponse(
+            data: ReservationSiteResource::collection($reservationSites),
+            message: 'ReservationSites found successfully'
+        );
     }
 
-    public function store(StoreReservationSiteRequest $request)
+    public function store(StoreReservationSiteRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $site = Site::findOrFail($request->site_id);
-        if ($request->nb_personnes > 1) {
-            $data['price'] = (int) ($site->price * $request->nb_personnes);
-        } else {
-            $data['price'] = (int) ($site->price);
+        $site = Site::query()->find($request->site_id);
+        if (!$site) {
+            return $this->sendError(error: 'Site not found', code: 404);
         }
-        // if ($request->has('activites')) {
-        collect($request->activites)->each(function ($activite_id) use ($site, &$data) {
-            $activite = $site->activites()->findOrFail($activite_id);
-
-            if ($activite->pivot->type === 'optionnel') {
-                $data['price'] = (int) ($data['price'] + $activite->pivot->price);
+        $price = 0;
+        if ($request->has('activites') && count($request->activites) > 0) {
+            $activites = Activite::query()->whereIn('id', $request->activites)->get();
+            if ($activites->count() !== count($request->activites)) {
+                return $this->sendError(error: 'Activite not found', code: 404);
             }
-        });
-        // }
-        // create reservationSite
-        $reservationSite = ReservationSite::create(collect($data)->except('activites')->toArray());
 
-        $activiteSite = $site->activites()->get();
-        $activiteSite->each(function ($activite) use ($reservationSite, $request) {
-            if ($activite->pivot->type === 'obligatoire') {
-                $reservationSite->activites()->attach($activite->id);
-            }
-            if ($activite->pivot->type === 'optionnel') {
-                $activiteRequest = collect($request->activites)->contains($activite->id);
-                if ($activiteRequest) {
-                    $reservationSite->activites()->attach($activite->id);
-                }
-            }
-        });
+            $activites->each(function ($activite) use ($price, $site, &$data) {
+//                if ($activite->pivot->type === 'obligatoire') {
+//                    $data['price'] = (int)($data['price'] + $activite->pivot->price);
+//                }
+                $price += (int)$activite->price;
+            });
+        }
+        $data['price'] = (int)($site->price + $price);
+        if ($request->nb_personnes > 1) {
+            $data['price'] = (int)($data['price'] * $request->nb_personnes);
+        }
+        $reservationSite = ReservationSite::create($data);
+        $reservationSite->activites()->attach($request->activites);
 
-        return response()->json([
-            'message' => 'ReservationSite created successfully',
-            'data' => new ReservationSiteResource($reservationSite)
-        ]);
+        return $this->sendResponse(
+            data: new ReservationSiteResource($reservationSite),
+            message: 'ReservationSite created successfully'
+        );
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        $reservationSite = ReservationSite::with('site', 'user', 'siteDate', 'activites')->findOrFail($id);
-        return response()->json([
-            'message' => 'ReservationSite found successfully',
-            'data' => new ReservationSiteResource($reservationSite)
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        $reservationSite = ReservationSite::query()
+            ->with('site', 'user', 'activites')
+            ->find($id);
+        if (!$reservationSite) {
+            return $this->sendError(error: 'ReservationSite not found', code: 404);
+        }
+        return $this->sendResponse(
+            data: new ReservationSiteResource($reservationSite),
+            message: 'ReservationSite found successfully'
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
-        //
+        $revervationSite = ReservationSite::query()->find($id);
+        if (!$revervationSite) {
+            return $this->sendError(error: 'ReservationSite not found', code: 404);
+        }
+        $revervationSite->delete();
+        return $this->sendResponse(
+            data: null,
+            message: 'ReservationSite deleted successfully'
+        );
     }
 
-    public function getReservationSiteByUser($id)
+    public function getReservationSiteByUser(int $id): JsonResponse
     {
-        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('user_id', $id)->get();
-        return response()->json([
-            'message' => 'ReservationSites found successfully',
-            'data' => ReservationSiteResource::collection($reservationSites)
-        ]);
+        $reservationSites = ReservationSite::query()
+            ->where('user_id', $id)
+            ->with('site', 'user', 'activites')
+            ->get();
+        return $this->sendResponse(
+            data: ReservationSiteResource::collection($reservationSites),
+            message: 'ReservationSites found successfully'
+        );
     }
 
-    public function cancel($id)
+    public function cancel(int $id): JsonResponse
     {
-        $reservationSite = ReservationSite::findOrFail($id);
+        $reservationSite = ReservationSite::query()
+            ->where('id', $id)
+            ->where('status', 'pending')
+            ->first();
+        if (!$reservationSite) {
+            return $this->sendError(error: 'ReservationSite not found', code: 404);
+        }
         $reservationSite->update(['status' => 'canceled']);
-        return response()->json([
-            'message' => 'ReservationSite canceled successfully'
-        ]);
+        return $this->sendResponse(
+            data: null,
+            message: 'ReservationSite canceled successfully'
+        );
     }
 
-    public function pay($id)
+    public function pay(int $id): JsonResponse
     {
-        $reservationSite = ReservationSite::findOrFail($id);
-        $reservationSite->update(['is_paid' => true]);
-        return response()->json([
-            'message' => 'ReservationSite paid successfully',
-        ]);
+        $reservationSite = ReservationSite::query()
+            ->where('id', $id)
+            ->where('status', 'accepted')
+            ->first();
+        if (!$reservationSite) {
+            return $this->sendError(error: 'ReservationSite not found', code: 404);
+        }
+        $reservationSite->update(['status' => 'paid', 'is_paid' => true]);
+        return $this->sendResponse(
+            data: null,
+            message: 'ReservationSite paid successfully'
+        );
     }
 
-    public function validated($id)
+    public function validated(int $id): JsonResponse
     {
-        $reservationSite = ReservationSite::findOrFail($id);
+        $reservationSite = ReservationSite::query()
+            ->where('id', $id)
+            ->where('status', 'pending')
+            ->first();
+        if (!$reservationSite) {
+            return $this->sendError(error: 'ReservationSite not found', code: 404);
+        }
         $reservationSite->update(['status' => 'accepted']);
-        return response()->json([
-            'message' => 'ReservationSite validated successfully',
-        ]);
+        return $this->sendResponse(
+            data: null,
+            message: 'ReservationSite validated successfully'
+        );
     }
 
-    public function refused($id)
+    public function refused(int $id): JsonResponse
     {
-        $reservationSite = ReservationSite::findOrFail($id);
+        $reservationSite = ReservationSite::query()
+            ->where('id', $id)
+            ->where('status', 'pending')
+            ->first();
+        if (!$reservationSite) {
+            return $this->sendError(error: 'ReservationSite not found', code: 404);
+        }
         $reservationSite->update(['status' => 'refused']);
-        return response()->json([
-            'message' => 'ReservationSite refused successfully',
-        ]);
+        return $this->sendResponse(
+            data: null,
+            message: 'ReservationSite refused successfully'
+        );
     }
-
-    public function getReservationSiteBySite($id)
-    {
-        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('site_id', $id)->get();
-        return response()->json([
-            'message' => 'ReservationSites found successfully',
-            'data' => ReservationSiteResource::collection($reservationSites)
-        ]);
-    }
-
-    public function getReservationSiteBySiteDate($id)
-    {
-        $reservationSites = ReservationSite::with('site', 'user', 'siteDate', 'activites')->where('site_date_id', $id)->get();
-        return response()->json([
-            'message' => 'ReservationSites found successfully',
-            'data' => ReservationSiteResource::collection($reservationSites)
-        ]);
-    }
+    // TODO: add activite to reservationSite
     /*
     public function addActivite(Request $request, int $id):  \Illuminate\Http\JsonResponse
     {
@@ -247,8 +252,10 @@ class ReservationSiteController extends Controller
         return response()->json([
             'message' => 'Activite added successfully',
         ]);
-    }
+    }*/
 
+    // TODO: remove activite from reservationSite
+    /*
     public function removeActivite(Request $request, int $id):  \Illuminate\Http\JsonResponse
     {
         $reservationSite = ReservationSite::findOrFail($id);
@@ -256,5 +263,6 @@ class ReservationSiteController extends Controller
         return response()->json([
             'message' => 'Activite removed successfully',
         ]);
-    } */
+    }
+    */
 }

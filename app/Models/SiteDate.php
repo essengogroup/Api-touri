@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @OA\Schema(
@@ -41,22 +42,22 @@ class SiteDate extends Model
     use HasFactory;
 
 
-    protected $guarded = [];
+    protected $fillable = [
+        'site_id',
+        'date_visite',
+    ];
+
+    protected $casts = [
+        'site_id' => 'integer',
+        'date_visite' => 'date',
+    ];
 
     /**
      * Get the site that owns the site date.
      */
-    public function site()
+    public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class);
-    }
-
-    /**
-     * Get the reservations for the site date.
-     */
-    public function reservations()
-    {
-        return $this->hasMany(ReservationSite::class);
     }
 
     /**

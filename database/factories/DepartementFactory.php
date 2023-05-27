@@ -16,10 +16,11 @@ class DepartementFactory extends Factory
      */
     public function definition()
     {
+        $imageUrl = 'https://picsum.photos/640/480?rand=' . uniqid();
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->text,
-            'image_path' => 'https://picsum.photos/200/300',
+            'image_path' => $imageUrl,
         ];
     }
 }

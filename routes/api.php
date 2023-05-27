@@ -23,13 +23,14 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
             'OS Release' => php_uname('v'),
             'OS Hostname' => php_uname('n'),
             'OS Domain' => php_uname('d'),
-            'OS Kernel' => php_uname('a'),
+            'api_docs' => url('/api/documentation'),
         ];
     });
     require __DIR__ . '/auth.php';
     Route::get('user', [UserController::class, 'index']);
     Route::apiResource('departement', DepartementController::class)->except(['update']);
-    Route::post('departement/{departement}', [DepartementController::class, 'update']);
+    Route::put('departement/{departement}', [DepartementController::class, 'update']);
+    Route::post('departement/{departement}/image-path', [DepartementController::class, 'updateImagePath']);
     Route::apiResource('media', MediaController::class)->only(["store", "show", "destroy", "index"]);
     Route::apiResource('site', SitesController::class);
     Route::post('site/{site}/activite', [SitesController::class, 'addActivite']);
@@ -41,12 +42,11 @@ Route::prefix('v1')->middleware(['web'])->group(function () {
     Route::post('activite/{activite}/site', [ActiviteController::class, 'addSite']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::apiResource('user', UserController::class)->except(['index', 'store', 'update']);
-        Route::post('user/{user}', [UserController::class, 'update']);
+        Route::apiResource('user', UserController::class)->except(['index', 'store']);
+        Route::post('user/{user}', [UserController::class, 'updateProfileImage']);
 
         Route::apiResource('reservation-site', ReservationSiteController::class);
         Route::get('reservation-site/user/{user}', [ReservationSiteController::class, 'getReservationSiteByUser']);
-
 
         Route::post('reservation-site/{reservationSite}/activite', [ReservationSiteController::class, 'addActivite']);
         Route::put('reservation-site/{reservationSite}/validate', [ReservationSiteController::class, 'validated']);

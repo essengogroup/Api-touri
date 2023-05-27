@@ -25,9 +25,7 @@ class StoreSiteDateRequest extends FormRequest
     {
         return [
             'site_id' => 'required|integer|exists:sites,id',
-            'date_' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i',
+            'date_visite' => 'required|date',
         ];
     }
 }
