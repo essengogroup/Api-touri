@@ -258,7 +258,7 @@ correspond aux réservations des événements
     - created_at | datetime (default: now)
     - updated_at | datetime (default: now)
 
-### hebergements
+### Hebergements
 
     - id | int
     - name | string

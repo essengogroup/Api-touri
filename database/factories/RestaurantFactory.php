@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Assurance>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Restaurant>
  */
-class AssuranceFactory extends Factory
+class RestaurantFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class AssuranceFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->name,
             'description' => $this->faker->text(),
             'image_path' => $this->faker->imageUrl(),
         ];

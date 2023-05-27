@@ -16,6 +16,8 @@ class Comment extends Model
         'commentable_type',
     ];
 
+    protected $with = ['user'];
+
     public function commentable(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo();

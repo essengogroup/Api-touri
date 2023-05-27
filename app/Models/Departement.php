@@ -30,7 +30,7 @@ class Departement extends Model
         'image_path',
     ];
 
-//    protected $with = ['sites'];
+    protected $with = ['sites'];
 
     public function sites(): HasMany
     {

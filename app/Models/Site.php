@@ -57,7 +57,20 @@ class Site extends Model
         'is_active' => 'boolean',
     ];
 
-//    protected $with = ['departement', 'medias', 'siteDates', 'activites'];
+    protected $with = ['comments', 'likes', 'shares'];
+
+
+    public function getSharesCountAttribute()
+    {
+        return $this->shares()->count();
+    }
+
+
+
+    public function getLikesCountAttribute()
+    {
+        return $this->likes()->count();
+    }
 
     /**
      * Get the departement that owns the site.
@@ -125,6 +138,16 @@ class Site extends Model
     public function restaurants(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Restaurant::class, 'restaurants_sites');
+    }
+
+    public function guides(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Guide::class, 'guides_sites');
+    }
+
+    public function assurances(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Assurance::class, 'assurances_sites');
     }
 
 }

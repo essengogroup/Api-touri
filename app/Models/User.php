@@ -29,6 +29,7 @@ class User extends Authenticatable
     // ];
     protected $guarded = [];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -66,5 +67,10 @@ class User extends Authenticatable
     public function likes(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function shares(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Share::class);
     }
 }

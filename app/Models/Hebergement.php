@@ -30,6 +30,6 @@ class Hebergement extends Model
 
     public function sites(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Site::class);
+        return $this->belongsToMany(Site::class, 'hebergements_sites');
     }
 }

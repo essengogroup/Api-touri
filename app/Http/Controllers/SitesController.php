@@ -49,7 +49,7 @@ class SitesController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $sites = Site::query()
-            ->with(['departement', 'medias'])
+            ->with(['departement', 'medias', 'comments', 'activites'])
             ->when($request->has('name'), function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->name . '%');
             })
@@ -93,7 +93,7 @@ class SitesController extends ApiController
     public function show(int $id)
     {
         $site = Site::query()
-            ->with(['activites'])
+            ->with(['activites', 'departement', 'medias', 'comments', 'likes', 'guides', 'restaurants', 'transports', 'hebergements', 'assurances'])
             ->find($id);
         if (!$site) {
             return $this->sendError(

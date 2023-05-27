@@ -12,11 +12,10 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('restaurants', function (Blueprint $table) {
+        Schema::create('guides_sites', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
-            $table->text('description')->nullable();
-            $table->text('image_path')->nullable();
+            $table->foreignIdFor(\App\Models\Site::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Guide::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('restaurants');
+        Schema::dropIfExists('guides_sites');
     }
 };

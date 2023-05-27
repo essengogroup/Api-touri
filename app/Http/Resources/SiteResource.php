@@ -25,21 +25,16 @@ class SiteResource extends JsonResource
             'updatedAt' => $this->updated_at,
             'departement' => new DepartementResource($this->whenLoaded('departement')),
             'medias' => MediaResource::collection($this->medias),
-            /*'siteDates' => SiteDateResource::collection($this->whenLoaded('siteDates')),
-            'activites' => $this->activites->map(function ($activite) {
-                return [
-                    'id' => $activite->id,
-                    'name' => $activite->name,
-                    'description' => $activite->description,
-                    'image_path' => url($activite->image_path),
-                    'created_at' => $activite->created_at,
-                    'updated_at' => $activite->updated_at,
-                    'pivot' => [
-                        'type' => $activite->pivot->type,
-                        'price' => $activite->pivot->price
-                    ]
-                ];
-            })*/
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
+//            'countComments' => $this->comments->count(),
+            'activites' => ActiviteResource::collection($this->whenLoaded('activites')),
+            'likesCount' => $this->likes_count,
+            'sharesCount' => $this->shares_count,
+            'guides' => GuideResource::collection($this->whenLoaded('guides')),
+            'assurances' => AssuranceResource::collection($this->whenLoaded('assurances')),
+            'hebergements' => HebergementResource::collection($this->whenLoaded('hebergements')),
+            'restaurants' => RestaurantResource::collection($this->whenLoaded('restaurants')),
+            'transports' => TransportResource::collection($this->whenLoaded('transports')),
         ];
     }
 }
