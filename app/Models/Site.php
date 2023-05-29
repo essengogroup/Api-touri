@@ -58,7 +58,7 @@ class Site extends Model
         'is_active' => 'boolean',
     ];
 
-    protected $with = ['departement', 'comments', 'likes', 'shares', 'medias', 'activites', 'guides', 'assurances', 'hebergements', 'restaurants', 'transports'];
+//    protected $with = ['departement', 'comments', 'likes', 'shares', 'medias', 'activites', 'guides', 'assurances', 'hebergements', 'restaurants', 'transports'];
 
 
     public function getSharesCountAttribute()

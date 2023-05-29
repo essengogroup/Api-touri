@@ -7,16 +7,15 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
-class RolesTableSeeder extends Seeder
+class RoleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() : void
+    public function run(): void
     {
-        app()['cache']->forget('spatie.permission.cache');
         Role::create(['name' => RoleConstants::ADMIN]);
         Role::create(['name' => RoleConstants::CLIENT]);
     }
