@@ -18,7 +18,7 @@ class GuideResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'price' => $this->price,
+            'price' => 150,
             'imagePath' => $this->image_path,
         ];
     }
