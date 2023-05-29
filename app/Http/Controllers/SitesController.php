@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Http;
 
 class SitesController extends ApiController
 {
+    public $withs = ['departement', 'comments', 'likes', 'shares', 'medias', 'activites', 'guides', 'assurances', 'hebergements', 'restaurants', 'transports'];
+
     /**
      * Display the specified resource.
      *
@@ -49,7 +51,7 @@ class SitesController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $sites = Site::query()
-//            ->with(['departement', 'medias', 'comments', 'activites'])
+            ->with($this->withs)
             ->when($request->has('name'), function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->name . '%');
             })
@@ -90,10 +92,10 @@ class SitesController extends ApiController
      * @param int $id
      * @return JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
         $site = Site::query()
-//            ->with(['activites', 'departement', 'medias', 'comments', 'likes', 'guides', 'restaurants', 'transports', 'hebergements', 'assurances'])
+            ->with($this->withs)
             ->find($id);
         if (!$site) {
             return $this->sendError(
