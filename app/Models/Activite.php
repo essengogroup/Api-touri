@@ -34,7 +34,7 @@ class Activite extends Model
     ];
 
     protected $casts = [
-        'price' => 'float',
+        'price' => 'integer',
     ];
 
     /**
@@ -42,10 +42,10 @@ class Activite extends Model
      */
     public function sites(): BelongsToMany
     {
-        return $this->belongsToMany(Site::class, 'activites_sites')->withPivot('type', 'price');
+        return $this->belongsToMany(Site::class, 'activites_sites');
     }
 
-    public function medias(): HasMany
+    public function mediaActivites(): HasMany
     {
         return $this->hasMany(MediaActivite::class);
     }

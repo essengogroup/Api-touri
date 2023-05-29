@@ -44,6 +44,7 @@ class DepartementController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $departments = Departement::query()
+//            ->with(['sites.activites', 'sites.medias', 'sites.comments', 'sites.likes', 'sites.guides', 'sites.restaurants', 'sites.transports', 'sites.hebergements', 'sites.assurances'])
             ->when(request('search'), function ($query) {
                 $query->where('name', 'like', '%' . request('search') . '%');
             })
@@ -146,7 +147,9 @@ class DepartementController extends ApiController
      */
     public function show(int $id): JsonResponse
     {
-        $departement = Departement::query()->find($id);
+        $departement = Departement::query()
+//            ->with(['sites.activites', 'sites.medias', 'sites.comments', 'sites.likes', 'sites.guides', 'sites.restaurants', 'sites.transports', 'sites.assurances'])
+            ->find($id);
         if (!$departement) {
             return $this->sendError(error: 'departement not found');
         }

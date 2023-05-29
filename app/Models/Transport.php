@@ -19,7 +19,7 @@ class Transport extends Model
 
     protected $casts = [
         'is_available' => 'boolean',
-        'price' => 'float',
+        'price' => 'integer',
     ];
 
     public function sites(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

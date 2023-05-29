@@ -26,6 +26,7 @@ class ReservationSite extends Model
     protected $casts = [
         'date_reservation' => 'date',
         'is_paid' => 'boolean',
+        'price' => 'integer',
     ];
 
     /**
