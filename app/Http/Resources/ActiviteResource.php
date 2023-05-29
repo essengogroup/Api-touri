@@ -18,9 +18,11 @@ class ActiviteResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'image_path' => url($this->image_path),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'imagePath' => url($this->image_path),
+            'isAvailable' => $this->isAvailable,
+            'price' => $this->price,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
             'sites' => SiteResource::collection($this->whenLoaded('sites')),
         ];
     }
