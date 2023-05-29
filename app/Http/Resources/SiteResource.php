@@ -26,7 +26,6 @@ class SiteResource extends JsonResource
             'departement' => new DepartementResource($this->whenLoaded('departement')),
             'medias' => MediaResource::collection($this->medias),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
-//            'countComments' => $this->comments->count(),
             'activites' => ActiviteResource::collection($this->whenLoaded('activites')),
             'likesCount' => $this->likes_count,
             'sharesCount' => $this->shares_count,

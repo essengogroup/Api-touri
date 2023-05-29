@@ -23,7 +23,7 @@ class Hebergement extends Model
 
     protected $casts = [
         'is_available' => 'boolean',
-        'price' => 'float',
+        'price' => 'integer',
         'latitude' => 'float',
         'longitude' => 'float',
     ];

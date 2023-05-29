@@ -58,14 +58,13 @@ class Site extends Model
         'is_active' => 'boolean',
     ];
 
-    protected $with = ['comments', 'likes', 'shares'];
+    protected $with = ['departement', 'comments', 'likes', 'shares', 'medias', 'activites', 'guides', 'assurances', 'hebergements', 'restaurants', 'transports'];
 
 
     public function getSharesCountAttribute()
     {
         return $this->shares()->count();
     }
-
 
 
     public function getLikesCountAttribute()
@@ -92,7 +91,7 @@ class Site extends Model
     /**
      * Get the activites for the site.
      */
-    public function activites()
+    public function activites(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Activite::class, 'activites_sites');
     }

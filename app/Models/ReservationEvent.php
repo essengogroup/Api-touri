@@ -24,7 +24,7 @@ class ReservationEvent extends Model
         'user_id' => 'integer',
         'event_id' => 'integer',
         'nb_persons' => 'integer',
-        'price' => 'float',
+        'price' => 'integer',
     ];
 
     public function user(): BelongsTo

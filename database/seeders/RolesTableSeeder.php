@@ -14,8 +14,9 @@ class RolesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run() : void
     {
+        app()['cache']->forget('spatie.permission.cache');
         Role::create(['name' => RoleConstants::ADMIN]);
         Role::create(['name' => RoleConstants::CLIENT]);
     }

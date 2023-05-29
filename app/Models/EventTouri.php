@@ -23,7 +23,7 @@ class EventTouri extends Model
     protected $casts = [
         'date_event' => 'date',
         'place' => 'integer',
-        'price' => 'float',
+        'price' => 'integer',
     ];
 
     public function reservations(): HasMany

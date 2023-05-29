@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 
 use App\Constants\RoleConstants;
+use App\Models\Activite;
 use App\Models\Assurance;
 use App\Models\Comment;
 use App\Models\Departement;
@@ -13,6 +14,7 @@ use App\Models\Guide;
 use App\Models\Hebergement;
 use App\Models\Like;
 use App\Models\Media;
+use App\Models\MediaActivite;
 use App\Models\Restaurant;
 use App\Models\Share;
 use App\Models\Site;
@@ -20,7 +22,6 @@ use App\Models\Transport;
 use App\Models\User;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -47,11 +48,6 @@ class DatabaseSeeder extends Seeder
         });
 
 
-        /*$departements = Departement::factory()->create([
-            'name' => $departementDatas['name'],
-            'description' => Factory::create()->text(200),
-            'image_path' => Factory::create()->imageUrl(640, 480, 'paris', true),
-        ]);*/
         collect($departementDatas)
             ->map(function ($departementData) {
                 Departement::factory()->create([
@@ -74,19 +70,9 @@ class DatabaseSeeder extends Seeder
                     ];
                 })->toArray()
             );
-
-            /*
-             * $departement->sites()->createMany(
-                Site::factory(
-                    Factory::create()->numberBetween(1, 5)
-                )->create([
-                    'departement_id' => $departement->id,
-                ])->make()->toArray()
-            );
-            */
         });
 
-        Site::all()->each(function ($site) {
+        Site::query()->limit(10)->get()->each(function ($site) {
             $site->medias()->createMany(
                 Media::factory(
                     Factory::create()->numberBetween(1, 5)
@@ -102,7 +88,6 @@ class DatabaseSeeder extends Seeder
                     'commentable_type' => Site::class,
                 ])->make()->toArray()
             );
-
             $site->likes()->createMany(
                 Like::factory(
                     Factory::create()->numberBetween(4, 100)
@@ -111,7 +96,6 @@ class DatabaseSeeder extends Seeder
                     'likeable_type' => Site::class,
                 ])->make()->toArray()
             );
-
             $site->shares()->createMany(
                 Share::factory(
                     Factory::create()->numberBetween(4, 100)
@@ -126,36 +110,45 @@ class DatabaseSeeder extends Seeder
                     Factory::create()->numberBetween(1, 5)
                 )->create()->pluck('id')
             );
-
             $site->assurances()->attach(
                 Assurance::factory(
                     Factory::create()->numberBetween(1, 5)
                 )->create()->pluck('id')
             );
-
-
             $site->restaurants()->attach(
                 Restaurant::factory(
                     Factory::create()->numberBetween(1, 5)
                 )->create()->pluck('id')
             );
-
             $site->hebergements()->attach(
                 Hebergement::factory(
                     Factory::create()->numberBetween(1, 5)
                 )->create()->pluck('id')
             );
-
             $site->transports()->attach(
                 Transport::factory(
                     Factory::create()->numberBetween(1, 5)
                 )->create()->pluck('id')
             );
-
             $site->restaurants()->attach(
                 Restaurant::factory(
                     Factory::create()->numberBetween(1, 5)
                 )->create()->pluck('id')
+            );
+            $site->activites()->attach(
+                Activite::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create()->pluck('id')
+            );
+        });
+
+        Activite::query()->get()->each(function ($activite) {
+            $activite->mediaActivites()->createMany(
+                MediaActivite::factory(
+                    Factory::create()->numberBetween(1, 5)
+                )->create([
+                    'activite_id' => $activite->id,
+                ])->make()->toArray()
             );
         });
     }
